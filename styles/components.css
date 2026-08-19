@@ -1,0 +1,912 @@
+/* =============================================================================
+   Essential Research — components
+   Every value is a token. If you need a number that is not here, add a token
+   first and record where it came from.
+
+   States in this system are colour SWAPS between pairs the brand already owns
+   (cyan <-> navy, navy <-> slate, gold <-> navy), never tints or shadows. The
+   corpus separates surfaces by fill, and hover should not be the one place that
+   breaks the rule.
+   ========================================================================== */
+
+/* =============================================================================
+   LOGO
+   Picks its variant from the surface it is sitting on. The dot stays cyan on
+   every background except the fully-mono reversed lock-up.
+   ========================================================================== */
+
+.es-logo {
+  --es-logo-dot: var(--es-colour-surface-accent);
+  display: inline-block;
+  width: var(--es-layout-logo-w);
+  min-width: var(--es-layout-logo-min-w);
+  color: var(--es-colour-text-primary);
+  /* clear space = one dot diameter, from the lock-up geometry */
+  padding: calc(var(--es-layout-logo-w) * var(--es-layout-logo-clear));
+}
+
+.es-logo__svg { width: 100%; height: auto; }
+
+/* Reversed. Wordmark goes white, dot holds cyan — this is the lock-up the
+   corpus uses on every navy cover and divider. */
+[data-surface="inverse"] .es-logo,
+[data-surface="inverse-muted"] .es-logo,
+.es-logo[data-on="dark"] {
+  color: var(--es-colour-text-on-inverse);
+  --es-logo-dot: var(--es-colour-surface-accent);
+}
+
+/* Fully mono reversed. For single-colour print and for photography where the
+   cyan dot cannot be trusted to hold. */
+.es-logo[data-variant="mono"] {
+  color: currentColor;
+  --es-logo-dot: currentColor;
+}
+
+.es-logo--sm { width: var(--es-layout-logo-min-w); }
+.es-logo--lg { width: calc(var(--es-layout-logo-w) * 2); }
+
+/* =============================================================================
+   BUTTON
+   [INFERRED] — no control exists in the source corpus. Geometry is derived from
+   the verdict pill (stroke weight, label weight) and the commentary box (the
+   outlined variant). Sentence case, not uppercase: uppercase with wide tracking
+   is reserved for eyebrows and verdict pills, where it is doing semantic work.
+   ========================================================================== */
+
+.es-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--es-space-2xs);
+  padding: var(--es-space-xs) var(--es-space-md);
+  border: var(--es-border-emphasis) solid transparent;
+  border-radius: var(--es-radius-control);
+  font-family: var(--es-font-body);
+  font-size: var(--es-text-lead);
+  font-weight: var(--es-weight-bold);
+  line-height: var(--es-leading-flat);
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: var(--es-elevation-flat);
+  transition:
+    background-color var(--es-motion-duration-fast) var(--es-motion-ease-standard),
+    border-color     var(--es-motion-duration-fast) var(--es-motion-ease-standard),
+    color            var(--es-motion-duration-fast) var(--es-motion-ease-standard);
+}
+
+.es-button:disabled,
+.es-button[aria-disabled="true"] {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Primary — cyan, swapping to navy. The brand's own light/dark pair. */
+.es-button--primary {
+  background-color: var(--es-colour-surface-accent);
+  border-color: var(--es-colour-surface-accent);
+  color: var(--es-colour-text-on-accent);
+}
+.es-button--primary:hover,
+.es-button--primary:focus-visible {
+  background-color: var(--es-colour-surface-inverse);
+  border-color: var(--es-colour-surface-inverse);
+}
+.es-button--primary:active { background-color: var(--es-colour-surface-inverse-deep); border-color: var(--es-colour-surface-inverse-deep); }
+
+/* Secondary — navy, swapping to slate. */
+.es-button--secondary {
+  background-color: var(--es-colour-surface-inverse);
+  border-color: var(--es-colour-surface-inverse);
+  color: var(--es-colour-text-on-inverse);
+}
+.es-button--secondary:hover,
+.es-button--secondary:focus-visible {
+  background-color: var(--es-colour-surface-inverse-muted);
+  border-color: var(--es-colour-surface-inverse-muted);
+}
+.es-button--secondary:active { background-color: var(--es-colour-surface-inverse-deep); border-color: var(--es-colour-surface-inverse-deep); }
+
+/* Outline — the commentary box, made interactive. */
+.es-button--outline {
+  background-color: transparent;
+  border-color: var(--es-colour-border-accent);
+  color: var(--es-colour-text-link);
+}
+.es-button--outline:hover,
+.es-button--outline:focus-visible {
+  background-color: var(--es-colour-surface-accent);
+  color: var(--es-colour-text-on-accent);
+}
+
+/* Highlight — gold. Reserved for the single most important action on a page,
+   the same way gold marks the participant voice in a report. */
+.es-button--highlight {
+  background-color: var(--es-colour-surface-highlight);
+  border-color: var(--es-colour-surface-highlight);
+  color: var(--es-colour-text-on-highlight);
+}
+.es-button--highlight:hover,
+.es-button--highlight:focus-visible {
+  background-color: var(--es-colour-surface-inverse);
+  border-color: var(--es-colour-surface-highlight);
+  color: var(--es-colour-surface-highlight);
+}
+
+/* Quiet — no chrome until it is needed. */
+.es-button--quiet {
+  background-color: transparent;
+  border-color: transparent;
+  color: var(--es-colour-text-link);
+  padding-inline: var(--es-space-2xs);
+}
+.es-button--quiet:hover,
+.es-button--quiet:focus-visible { color: var(--es-colour-surface-inverse); }
+
+.es-button--sm { padding: var(--es-space-2xs) var(--es-space-sm); font-size: var(--es-text-body); }
+.es-button--lg { padding: var(--es-space-sm) var(--es-space-lg); font-size: var(--es-text-subhead); }
+.es-button--block { display: flex; width: 100%; }
+
+/* On inverse surfaces the outline and quiet variants invert to white/gold. */
+[data-surface="inverse"] .es-button--outline,
+[data-surface="inverse-muted"] .es-button--outline {
+  border-color: var(--es-colour-surface-highlight);
+  color: var(--es-colour-surface-highlight);
+}
+[data-surface="inverse"] .es-button--outline:hover,
+[data-surface="inverse-muted"] .es-button--outline:hover {
+  background-color: var(--es-colour-surface-highlight);
+  color: var(--es-colour-text-on-highlight);
+}
+[data-surface="inverse"] .es-button--quiet,
+[data-surface="inverse-muted"] .es-button--quiet { color: var(--es-colour-text-on-inverse); }
+
+.es-button-group { display: flex; flex-wrap: wrap; gap: var(--es-space-sm); }
+
+/* =============================================================================
+   FORM CONTROLS
+   [INFERRED] — no form exists in the source corpus. Borrowed from the Q/Base
+   band (label above, tint fill) and the commentary box (1px outline).
+   ========================================================================== */
+
+.es-field { display: grid; gap: var(--es-space-3xs); }
+
+.es-field__label {
+  font-size: var(--es-text-lead);
+  font-weight: var(--es-weight-bold);
+  color: var(--es-text);
+}
+
+.es-field__hint,
+.es-field__error { font-size: var(--es-text-caption); line-height: var(--es-leading-snug); }
+.es-field__hint  { color: var(--es-colour-text-muted); }
+.es-field__error { color: var(--es-colour-status-critical); font-weight: var(--es-weight-bold); }
+
+.es-input,
+.es-textarea,
+.es-select {
+  width: 100%;
+  padding: var(--es-space-xs) var(--es-space-sm);
+  background-color: var(--es-colour-surface-page);
+  border: var(--es-border-hairline) solid var(--es-colour-border-subtle);
+  border-radius: var(--es-radius-control);
+  color: var(--es-colour-text-primary);
+  font-size: var(--es-text-lead);
+  line-height: var(--es-leading-snug);
+  transition: border-color var(--es-motion-duration-fast) var(--es-motion-ease-standard);
+}
+
+.es-input::placeholder,
+.es-textarea::placeholder { color: var(--es-colour-text-muted); }
+
+.es-input:hover,
+.es-textarea:hover,
+.es-select:hover { border-color: var(--es-colour-border-accent); }
+
+.es-input:focus,
+.es-textarea:focus,
+.es-select:focus {
+  outline: var(--es-border-emphasis) solid var(--es-colour-border-focus);
+  outline-offset: var(--es-focus-offset-inset);
+  border-color: var(--es-colour-border-accent);
+}
+
+.es-textarea { min-height: calc(var(--es-space-5xl) + var(--es-space-md)); resize: vertical; }
+
+.es-field[data-invalid] .es-input,
+.es-field[data-invalid] .es-textarea,
+.es-field[data-invalid] .es-select { border-color: var(--es-colour-status-critical); }
+
+.es-input:disabled,
+.es-textarea:disabled,
+.es-select:disabled {
+  background-color: var(--es-colour-surface-raised);
+  color: var(--es-colour-text-muted);
+  cursor: not-allowed;
+}
+
+.es-choice {
+  display: flex;
+  gap: var(--es-space-2xs);
+  align-items: flex-start;
+  font-size: var(--es-text-body);
+  line-height: var(--es-leading-snug);
+}
+
+.es-choice input {
+  accent-color: var(--es-colour-surface-accent);
+  width: var(--es-space-sm);
+  height: var(--es-space-sm);
+  margin-top: 0.1em;
+  flex: none;
+}
+
+[data-surface="inverse"] .es-field__label,
+[data-surface="inverse-muted"] .es-field__label { color: var(--es-colour-text-on-inverse); }
+[data-surface="inverse"] .es-field__hint,
+[data-surface="inverse-muted"] .es-field__hint { color: var(--es-colour-text-on-inverse-muted); }
+
+/* =============================================================================
+   BADGE, TAG, VERDICT PILL
+   ========================================================================== */
+
+/* Badge — a status, computed. Small, and it never carries a link. */
+.es-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--es-space-3xs);
+  padding: var(--es-space-3xs) var(--es-space-2xs);
+  border-radius: var(--es-radius-pill);
+  background-color: var(--es-colour-surface-sunken);
+  color: var(--es-colour-text-strong);
+  font-size: var(--es-text-caption);
+  font-weight: var(--es-weight-bold);
+  letter-spacing: var(--es-tracking-wide);
+  text-transform: uppercase;
+  line-height: var(--es-leading-flat);
+}
+
+.es-badge--accent    { background-color: var(--es-colour-surface-accent);    color: var(--es-colour-text-on-accent); }
+.es-badge--inverse   { background-color: var(--es-colour-surface-inverse);   color: var(--es-colour-text-on-inverse); }
+.es-badge--highlight { background-color: var(--es-colour-surface-highlight); color: var(--es-colour-text-on-highlight); }
+.es-badge--critical  { background-color: var(--es-colour-status-critical);   color: var(--es-colour-text-on-inverse); }
+
+/* Outline badge — for a status shown on an already-dark surface, where a filled
+   badge would read as a second panel. */
+.es-badge--outline {
+  background-color: transparent;
+  color: currentColor;
+  box-shadow: inset 0 0 0 var(--es-border-hairline) var(--es-colour-border-inverse);
+}
+
+/* Tag — a category, chosen. Square, outlined, sentence case, and it may link. */
+.es-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--es-space-3xs) var(--es-space-2xs);
+  border: var(--es-border-hairline) solid var(--es-colour-border-accent);
+  border-radius: var(--es-radius-none);
+  background-color: transparent;
+  color: var(--es-colour-text-link);
+  font-size: var(--es-text-caption);
+  line-height: var(--es-leading-flat);
+  text-decoration: none;
+}
+
+a.es-tag:hover {
+  background-color: var(--es-colour-surface-accent);
+  color: var(--es-colour-text-on-accent);
+}
+
+.es-tag-list { display: flex; flex-wrap: wrap; gap: var(--es-space-2xs); }
+
+/* Verdict pill — POSITIVE / IMPROVE. A real brand component: it straddles the
+   top edge of the panel it labels, right of centre, and its label is gold. */
+.es-verdict {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--es-space-2xs);
+  padding: var(--es-space-2xs) var(--es-space-md);
+  border: var(--es-border-emphasis) solid var(--es-colour-border-inverse);
+  border-radius: var(--es-radius-pill);
+  background-color: var(--es-colour-surface-inverse);
+  color: var(--es-colour-surface-highlight);
+  font-family: var(--es-font-display);
+  font-size: var(--es-text-heading);
+  font-weight: var(--es-weight-bold);
+  line-height: var(--es-leading-flat);
+  letter-spacing: var(--es-tracking-normal);
+  text-transform: uppercase;
+}
+
+.es-verdict__icon { width: 1em; height: 1em; fill: currentColor; }
+
+/* Audience badge — semantic, not decorative. Public reads dark with a gold
+   icon; stakeholders read gold with a navy icon. Do not swap them. */
+.es-audience {
+  display: grid;
+  place-items: center;
+  width: var(--es-layout-badge);
+  height: var(--es-layout-badge);
+  border-radius: var(--es-radius-circle);
+  flex: none;
+}
+
+.es-audience[data-audience="public"] {
+  background-color: var(--es-colour-text-strong);
+  color: var(--es-colour-surface-highlight);
+}
+
+.es-audience[data-audience="stakeholders"] {
+  background-color: var(--es-colour-surface-highlight);
+  color: var(--es-colour-surface-inverse);
+}
+
+.es-audience__icon { width: 62%; height: 62%; fill: currentColor; }
+
+/* Photo variant: a circular crop inside a gold ring. */
+.es-audience--photo {
+  border: var(--es-space-3xs) solid var(--es-colour-surface-highlight);
+  overflow: hidden;
+  background-color: var(--es-colour-surface-raised);
+}
+.es-audience--photo img { width: 100%; height: 100%; object-fit: cover; }
+
+/* =============================================================================
+   CARDS
+   ========================================================================== */
+
+.es-card {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--es-colour-surface-raised);
+  color: var(--es-colour-text-primary);
+  border-radius: var(--es-radius-none);
+  box-shadow: var(--es-elevation-flat);
+  overflow: hidden;
+}
+
+.es-card__body {
+  padding: var(--es-space-md);
+  display: grid;
+  gap: var(--es-space-sm);
+  align-content: start;
+  flex: 1;
+}
+
+.es-card__title {
+  font-family: var(--es-font-display);
+  font-size: var(--es-text-subhead);
+  font-weight: var(--es-weight-bold);
+  line-height: var(--es-leading-snug);
+  color: var(--es-colour-text-heading);
+}
+
+.es-card__meta { font-size: var(--es-text-caption); color: var(--es-colour-text-muted); }
+
+/* Header-bar card — the methodology phase card. The header carries the phase
+   label and an icon badge overlapping its top-right corner. Gold marks the
+   public phase; navy and slate mark stakeholder phases. */
+.es-card--headed .es-card__header {
+  position: relative;
+  padding: var(--es-space-md) calc(var(--es-layout-badge) + var(--es-space-md)) var(--es-space-md) var(--es-space-md);
+  background-color: var(--es-colour-surface-inverse);
+  color: var(--es-colour-text-on-inverse);
+  min-height: calc(var(--es-layout-badge) + var(--es-space-lg));
+  display: grid;
+  align-content: center;
+  gap: var(--es-space-3xs);
+}
+
+.es-card--headed[data-tone="public"]      .es-card__header { background-color: var(--es-colour-surface-highlight); color: var(--es-colour-text-on-highlight); }
+.es-card--headed[data-tone="stakeholder"] .es-card__header { background-color: var(--es-colour-surface-inverse-muted); }
+.es-card--headed[data-tone="deep"]        .es-card__header { background-color: var(--es-colour-surface-inverse); }
+
+.es-card__eyebrow {
+  font-size: var(--es-text-lead);
+  letter-spacing: var(--es-tracking-wide);
+  text-transform: uppercase;
+}
+
+.es-card__label {
+  font-family: var(--es-font-display);
+  font-size: var(--es-text-heading);
+  font-weight: var(--es-weight-bold);
+  line-height: var(--es-leading-flat);
+  text-transform: uppercase;
+}
+
+.es-card__badge {
+  position: absolute;
+  top: 50%;
+  right: calc(var(--es-space-md) * -0.5);
+  transform: translateY(-50%);
+}
+
+/* Comparison card — a titled panel pair. Header slate on the left, navy on the
+   right, so the reading order is legible before the copy is read. */
+.es-card--comparison .es-card__header {
+  padding: var(--es-space-md);
+  background-color: var(--es-colour-surface-inverse-muted);
+  color: var(--es-colour-text-on-inverse);
+  font-family: var(--es-font-display);
+  font-size: var(--es-text-subhead);
+  font-weight: var(--es-weight-bold);
+  line-height: var(--es-leading-snug);
+  min-height: calc(var(--es-space-5xl) + var(--es-space-sm));
+  display: grid;
+  align-content: center;
+}
+
+.es-card--comparison[data-tone="deep"] .es-card__header { background-color: var(--es-colour-surface-inverse); }
+
+/* Link card — the one card that lifts, and it lifts by changing fill. */
+a.es-card {
+  text-decoration: none;
+  transition: background-color var(--es-motion-duration-base) var(--es-motion-ease-standard);
+}
+a.es-card:hover { background-color: var(--es-colour-surface-sunken); }
+
+.es-card-grid {
+  display: grid;
+  gap: var(--es-space-md);
+  grid-template-columns: repeat(auto-fit, minmax(min(var(--es-card-min, 16rem), 100%), 1fr));
+}
+
+/* =============================================================================
+   STAT BLOCK
+   The number leads. The base is not optional — a figure without its base is not
+   a finding, it is a claim.
+   ========================================================================== */
+
+.es-stat {
+  display: grid;
+  gap: var(--es-space-3xs);
+  padding: var(--es-space-md);
+  background-color: var(--es-colour-surface-sunken);
+  border-radius: var(--es-radius-none);
+}
+
+.es-stat__value {
+  font-family: var(--es-font-display);
+  font-size: var(--es-text-display);
+  font-weight: var(--es-weight-bold);
+  line-height: var(--es-leading-flat);
+  letter-spacing: var(--es-tracking-tight);
+  color: var(--es-colour-surface-inverse);
+  font-variant-numeric: tabular-nums;
+}
+
+.es-stat__label {
+  font-size: var(--es-text-lead);
+  font-weight: var(--es-weight-bold);
+  line-height: var(--es-leading-snug);
+  color: var(--es-colour-text-primary);
+}
+
+.es-stat__base { font-size: var(--es-text-caption); color: var(--es-colour-text-muted); }
+
+.es-stat[data-tone="accent"]    { background-color: var(--es-colour-surface-accent); }
+.es-stat[data-tone="accent"] .es-stat__value,
+.es-stat[data-tone="accent"] .es-stat__label { color: var(--es-colour-text-on-accent); }
+.es-stat[data-tone="accent"] .es-stat__base  { color: var(--es-colour-text-on-inverse-muted); }
+
+.es-stat[data-tone="inverse"]   { background-color: var(--es-colour-surface-inverse); }
+.es-stat[data-tone="inverse"] .es-stat__value { color: var(--es-colour-surface-highlight); }
+.es-stat[data-tone="inverse"] .es-stat__label { color: var(--es-colour-text-on-inverse); }
+.es-stat[data-tone="inverse"] .es-stat__base  { color: var(--es-colour-text-on-inverse-muted); }
+
+.es-stat-row {
+  display: grid;
+  gap: var(--es-space-md);
+  grid-template-columns: repeat(auto-fit, minmax(min(12rem, 100%), 1fr));
+}
+
+/* =============================================================================
+   QUOTE CARD
+   The workhorse. Fixed geometry: rounded tint panel, with the cyan double-quote
+   glyph sitting ABOVE and OVERLAPPING the top-left corner — not inside it.
+   Attribution is bold, on its own line, and follows the fixed format.
+   ========================================================================== */
+
+.es-quote {
+  position: relative;
+  margin-top: var(--es-space-lg);
+  padding: var(--es-space-md);
+  background-color: var(--es-colour-surface-sunken);
+  border-radius: var(--es-radius-card);
+  color: var(--es-colour-text-primary);
+  box-shadow: var(--es-elevation-flat);
+}
+
+.es-quote__mark {
+  position: absolute;
+  top: calc(var(--es-space-lg) * -1);
+  left: var(--es-space-sm);
+  width: var(--es-space-xl);
+  height: var(--es-space-xl);
+  color: var(--es-colour-surface-accent);
+  fill: currentColor;
+}
+
+.es-quote__text {
+  font-size: var(--es-text-quote);
+  font-style: italic;
+  line-height: var(--es-leading-snug);
+  margin: 0;
+}
+
+.es-quote__attribution {
+  display: block;
+  margin-top: var(--es-space-2xs);
+  font-size: var(--es-text-quote);
+  font-style: normal;
+  font-weight: var(--es-weight-bold);
+}
+
+/* On dark panels the tint fill is dropped entirely — the quotes sit naked in
+   the column, as they do in the message-testing layout. */
+.es-quote--bare {
+  background-color: transparent;
+  padding-inline: 0;
+}
+
+.es-quote-stack { display: grid; gap: var(--es-space-lg); }
+.es-quote-row {
+  display: grid;
+  gap: var(--es-space-md);
+  grid-template-columns: repeat(auto-fit, minmax(min(14rem, 100%), 1fr));
+}
+
+/* Pull quote — long-form only. Larger, no card, cyan marker rule. */
+.es-pullquote {
+  margin: var(--es-space-xl) 0;
+  padding-left: var(--es-space-md);
+  border-left: var(--es-border-marker) solid var(--es-colour-surface-accent);
+}
+
+.es-pullquote__text {
+  font-family: var(--es-font-display);
+  font-size: var(--es-text-heading);
+  font-weight: var(--es-weight-bold);
+  font-style: normal;
+  line-height: var(--es-leading-snug);
+  color: var(--es-colour-surface-inverse);
+  margin: 0;
+}
+
+.es-pullquote__attribution {
+  display: block;
+  margin-top: var(--es-space-2xs);
+  font-size: var(--es-text-caption);
+  font-weight: var(--es-weight-bold);
+  letter-spacing: var(--es-tracking-wide);
+  text-transform: uppercase;
+  color: var(--es-colour-text-muted);
+}
+
+/* =============================================================================
+   Q / BASE LINE
+   Non-negotiable above every chart. It is what makes the deck defensible.
+   ========================================================================== */
+
+.es-qbase {
+  padding: var(--es-space-xs) var(--es-space-sm);
+  background-color: var(--es-colour-surface-sunken);
+  color: var(--es-colour-text-primary);
+  font-size: var(--es-text-caption);
+  line-height: var(--es-leading-snug);
+  display: grid;
+  gap: var(--es-space-3xs);
+}
+
+.es-qbase__q b,
+.es-qbase__base b { font-weight: var(--es-weight-bold); }
+
+/* =============================================================================
+   COMMENTARY BOX
+   Carries the interpretation beside the evidence. Square, 1px cyan, no fill.
+   ========================================================================== */
+
+.es-commentary {
+  padding: var(--es-space-sm);
+  border: var(--es-border-hairline) solid var(--es-colour-border-accent);
+  border-radius: var(--es-radius-none);
+  background-color: transparent;
+  font-size: var(--es-text-body);
+  line-height: var(--es-leading-snug);
+  display: grid;
+  gap: var(--es-space-sm);
+  align-content: start;
+}
+
+.es-commentary strong { font-weight: var(--es-weight-bold); color: var(--es-colour-surface-inverse); }
+
+/* A footnote in the same family, for suppressed-label conventions. */
+.es-note {
+  align-self: start;
+  padding: var(--es-space-2xs) var(--es-space-xs);
+  border: var(--es-border-hairline) solid var(--es-colour-border-accent);
+  font-size: var(--es-text-caption);
+  line-height: var(--es-leading-snug);
+  color: var(--es-colour-text-muted);
+}
+
+/* =============================================================================
+   DATA TABLE
+   [INFERRED] — the corpus charts but never tabulates. Built from the rules the
+   charts already follow: no gridlines, no zebra, values labelled directly,
+   figures tabular and right-aligned, and a Q/Base line above.
+   ========================================================================== */
+
+/* A wide table scrolls inside its own box. min-width:0 stops its min-content
+   propagating up the grid and widening the page instead. */
+.es-table-wrap { overflow-x: auto; max-width: 100%; min-width: 0; }
+
+.es-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--es-text-body);
+  line-height: var(--es-leading-snug);
+}
+
+.es-table caption {
+  text-align: left;
+  padding-bottom: var(--es-space-2xs);
+  font-size: var(--es-text-caption);
+  color: var(--es-colour-text-muted);
+}
+
+.es-table thead th {
+  padding: var(--es-space-2xs) var(--es-space-xs);
+  background-color: var(--es-colour-surface-sunken);
+  color: var(--es-colour-text-strong);
+  font-size: var(--es-text-caption);
+  font-weight: var(--es-weight-bold);
+  letter-spacing: var(--es-tracking-wide);
+  text-transform: uppercase;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.es-table tbody th {
+  text-align: left;
+  font-weight: var(--es-weight-bold);
+  color: var(--es-colour-text-primary);
+}
+
+.es-table th,
+.es-table td {
+  padding: var(--es-space-xs);
+  border-bottom: var(--es-border-hairline) solid var(--es-colour-border-subtle);
+  vertical-align: baseline;
+}
+
+.es-table [data-numeric],
+.es-table th[data-numeric] {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.es-table tbody tr:last-child th,
+.es-table tbody tr:last-child td { border-bottom: 0; }
+
+.es-table tfoot td {
+  padding-top: var(--es-space-2xs);
+  font-size: var(--es-text-caption);
+  color: var(--es-colour-text-muted);
+  border-bottom: 0;
+}
+
+/* The row carrying the NET figure, called out the way the stacked charts do. */
+.es-table tr[data-emphasis] th,
+.es-table tr[data-emphasis] td {
+  background-color: var(--es-colour-surface-sunken);
+  font-weight: var(--es-weight-bold);
+}
+
+/* =============================================================================
+   TESTING PANEL
+   Stacked verdict panels with the pill straddling the top edge. POSITIVE takes
+   navy, IMPROVE takes slate — the darker panel is the stronger verdict.
+   ========================================================================== */
+
+.es-panel {
+  position: relative;
+  margin-top: var(--es-space-xl);
+  padding: var(--es-space-lg) var(--es-space-md) var(--es-space-md);
+  border-radius: var(--es-radius-card);
+  background-color: var(--es-colour-surface-inverse);
+  color: var(--es-colour-text-on-inverse);
+}
+
+.es-panel[data-verdict="improve"] { background-color: var(--es-colour-surface-inverse-muted); }
+
+.es-panel__verdict {
+  position: absolute;
+  top: calc(var(--es-space-lg) * -1);
+  right: var(--es-space-2xl);
+}
+
+.es-panel .es-list > li::before { background-color: var(--es-colour-surface-highlight); }
+
+/* =============================================================================
+   EVIDENCE ANNOTATION
+   Inline highlighting of a verbatim narrative, with a legend beneath. The
+   legend is mandatory — an unexplained highlight is decoration.
+   ========================================================================== */
+
+.es-annotate { padding: 0.1em 0.15em; border-radius: var(--es-radius-control); color: var(--es-colour-text-strong); }
+.es-annotate[data-mark="agree"]      { background-color: var(--es-colour-evidence-agree); }
+.es-annotate[data-mark="disagree"]   { background-color: var(--es-colour-evidence-disagree); }
+.es-annotate[data-mark="polarising"] { background-color: var(--es-colour-evidence-polarising); }
+
+.es-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--es-space-sm);
+  font-size: var(--es-text-caption);
+  font-weight: var(--es-weight-bold);
+  letter-spacing: var(--es-tracking-wide);
+  text-transform: uppercase;
+}
+
+.es-legend__item { display: inline-flex; align-items: center; gap: var(--es-space-3xs); }
+.es-legend__swatch { width: var(--es-space-xs); height: var(--es-space-xs); border-radius: var(--es-radius-control); }
+
+/* =============================================================================
+   CHART PRIMITIVES
+   Enough to render the four chart forms the corpus actually uses, in markup,
+   so the conventions survive the sync: values labelled at the bar end, no
+   gridlines, no axis furniture, series colours fixed by role.
+   ========================================================================== */
+
+.es-chart { display: grid; gap: var(--es-space-sm); }
+
+/* --es-bar-scale is the axis multiplier: set it on .es-bars so the longest bar
+   fills the plot. A 40% axis takes 2.5, a 60% axis takes 1.667. The value the
+   bar reports stays the real figure. */
+.es-bars { display: grid; gap: var(--es-space-xs); --es-bar-scale: 1; }
+
+.es-bar {
+  display: grid;
+  grid-template-columns: minmax(min(6rem, 35%), 12rem) 1fr;
+  gap: var(--es-space-sm);
+  align-items: center;
+  font-size: var(--es-text-body);
+}
+
+.es-bar__label { text-align: right; line-height: var(--es-leading-snug); }
+.es-bar__track { display: flex; align-items: center; gap: var(--es-space-2xs); }
+
+.es-bar__fill {
+  height: var(--es-space-md);
+  background-color: var(--es-colour-data-1);
+  width: calc(var(--es-bar-value, 0%) * var(--es-bar-scale, 1));
+  min-width: var(--es-space-3xs);
+}
+
+.es-bar__value { font-weight: var(--es-weight-bold); font-variant-numeric: tabular-nums; }
+
+.es-bar[data-series="2"] .es-bar__fill { background-color: var(--es-colour-data-2); }
+.es-bar[data-series="3"] .es-bar__fill { background-color: var(--es-colour-data-3); }
+.es-bar[data-series="4"] .es-bar__fill { background-color: var(--es-colour-data-4); }
+
+/* 100% stacked row. Segments carry their own labels; nothing under 5% is
+   labelled, and the chart says so in a note. */
+.es-stack-bar { display: flex; width: 100%; height: var(--es-space-xl); }
+
+.es-stack-bar__seg {
+  display: grid;
+  place-items: center;
+  font-size: var(--es-text-body);
+  font-weight: var(--es-weight-regular);
+  color: var(--es-colour-text-on-inverse);
+  width: var(--es-seg-value, 0%);
+  overflow: hidden;
+}
+
+.es-stack-bar__seg[data-scale="5"] { background-color: var(--es-colour-scale-5); }
+.es-stack-bar__seg[data-scale="4"] { background-color: var(--es-colour-scale-4); color: var(--es-colour-text-strong); }
+.es-stack-bar__seg[data-scale="3"] { background-color: var(--es-colour-scale-3); }
+.es-stack-bar__seg[data-scale="2"] { background-color: var(--es-colour-scale-2); }
+.es-stack-bar__seg[data-scale="1"] { background-color: var(--es-colour-scale-1); color: var(--es-colour-text-strong); }
+
+.es-chart__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--es-space-md);
+  font-size: var(--es-text-body);
+}
+
+.es-chart__key { display: inline-flex; align-items: center; gap: var(--es-space-3xs); }
+.es-chart__key i { width: var(--es-space-xs); height: var(--es-space-xs); display: block; }
+
+/* =============================================================================
+   CHEVRON FLOW
+   A logic sequence. Steps the audience can make read navy; steps they cannot
+   read grey. The summary bar underneath states the implication.
+   ========================================================================== */
+
+.es-flow { display: flex; flex-wrap: wrap; gap: var(--es-space-2xs); align-items: stretch; }
+
+.es-flow__step {
+  flex: 1 1 8rem;
+  min-width: 0;
+  padding: var(--es-space-sm);
+  background-color: var(--es-colour-data-inactive);
+  color: var(--es-colour-text-on-inverse);
+  font-size: var(--es-text-body);
+  line-height: var(--es-leading-snug);
+  display: grid;
+  align-content: center;
+  text-align: center;
+  border-radius: var(--es-radius-control);
+}
+
+.es-flow__step[data-state="made"] { background-color: var(--es-colour-surface-inverse); }
+
+.es-flow__summary {
+  margin-top: var(--es-space-2xs);
+  padding: var(--es-space-md);
+  background-color: var(--es-colour-data-inactive);
+  color: var(--es-colour-text-on-inverse);
+  font-weight: var(--es-weight-bold);
+  font-size: var(--es-text-lead);
+  line-height: var(--es-leading-snug);
+  text-align: center;
+  border-radius: var(--es-radius-control);
+}
+
+/* Ramped stage strip — the methodology chevrons, light to dark. */
+/* Subgrid keeps every stage head on one row and every body on the next, so a
+   two-line stage name does not shunt its column down. */
+.es-stages {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(11rem, 100%), 1fr));
+  grid-template-rows: auto 1fr;
+}
+
+.es-stages__stage {
+  display: grid;
+  grid-row: span 2;
+  grid-template-rows: subgrid;
+}
+
+@supports not (grid-template-rows: subgrid) {
+  .es-stages { grid-template-rows: none; }
+  .es-stages__stage { grid-row: auto; grid-template-rows: auto 1fr; }
+  .es-stages__head { min-height: calc(var(--es-space-4xl) + var(--es-space-2xs)); align-content: center; }
+}
+
+.es-stages__head {
+  padding: var(--es-space-sm);
+  text-align: center;
+  font-family: var(--es-font-display);
+  font-weight: var(--es-weight-bold);
+  font-size: var(--es-text-subhead);
+  line-height: var(--es-leading-snug);
+  color: var(--es-colour-text-on-inverse);
+}
+
+.es-stages__body {
+  padding: var(--es-space-md);
+  font-size: var(--es-text-body);
+  line-height: var(--es-leading-snug);
+  color: var(--es-colour-text-on-inverse);
+  display: grid;
+  gap: var(--es-space-sm);
+  align-content: start;
+}
+
+.es-stages__stage[data-ramp="1"] .es-stages__head,
+.es-stages__stage[data-ramp="1"] .es-stages__body { background-color: var(--es-colour-ramp-1); }
+.es-stages__stage[data-ramp="2"] .es-stages__head,
+.es-stages__stage[data-ramp="2"] .es-stages__body { background-color: var(--es-colour-ramp-2); }
+.es-stages__stage[data-ramp="3"] .es-stages__head,
+.es-stages__stage[data-ramp="3"] .es-stages__body { background-color: var(--es-colour-ramp-3); }
+.es-stages__stage[data-ramp="4"] .es-stages__head,
+.es-stages__stage[data-ramp="4"] .es-stages__body { background-color: var(--es-colour-ramp-4); }
+
+.es-stages__head { border-bottom: var(--es-border-emphasis) solid var(--es-colour-surface-page); }

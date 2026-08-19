@@ -1,0 +1,549 @@
+/* =============================================================================
+   Essential Research — layout patterns and page furniture
+   Slide chrome, the dot field, and the web-page bands. Tokens only.
+   ========================================================================== */
+
+/* =============================================================================
+   THE DOT FIELD
+   One colour at five opacity steps on a square grid, density and opacity both
+   ramping in the same direction, so scattered points resolve into a solid block.
+   This is a CSS reconstruction of the supplied PNGs; for print and for anything
+   at large scale use assets/patterns/*.png, which are the authoritative files.
+   ========================================================================== */
+
+.es-dots {
+  --es-dot-r: calc(var(--es-pattern-dot-size) / 2);
+  --es-dot-ramp:
+    rgba(0, 0, 0, 0) 0 8%,
+    rgba(0, 0, 0, var(--es-pattern-step-1)) 8% 26%,
+    rgba(0, 0, 0, var(--es-pattern-step-2)) 26% 44%,
+    rgba(0, 0, 0, var(--es-pattern-step-3)) 44% 62%,
+    rgba(0, 0, 0, var(--es-pattern-step-4)) 62% 80%,
+    rgba(0, 0, 0, var(--es-pattern-step-5)) 80% 100%;
+  background-image:
+    radial-gradient(circle at center,
+      var(--es-pattern-dot-colour) 0 var(--es-dot-r),
+      transparent var(--es-dot-r));
+  background-size: var(--es-pattern-pitch) var(--es-pattern-pitch);
+  background-position: 0 0;
+  /* The five measured opacity steps as hard bands. The source pattern steps —
+     it does not fade — so the mask steps with it. */
+  -webkit-mask-image: linear-gradient(to right, var(--es-dot-ramp));
+  mask-image: linear-gradient(to right, var(--es-dot-ramp));
+}
+
+/* Direction variants. In the supplied pattern files the field always resolves
+   towards the outer edge of the artboard — sparse where the copy sits, dense at
+   the margin. Keep that: the pattern frames the argument, it does not sit under
+   it. */
+.es-dots[data-direction="left"]  { -webkit-mask-image: linear-gradient(to left, var(--es-dot-ramp));   mask-image: linear-gradient(to left, var(--es-dot-ramp)); }
+.es-dots[data-direction="down"]  { -webkit-mask-image: linear-gradient(to bottom, var(--es-dot-ramp)); mask-image: linear-gradient(to bottom, var(--es-dot-ramp)); }
+
+/* The minimal lock-up: a single row of dots, used as a rule or a divider. */
+.es-dots--rule {
+  height: var(--es-pattern-pitch);
+  background-size: var(--es-pattern-pitch) var(--es-pattern-pitch);
+  background-position: 0 center;
+  background-repeat: repeat-x;
+}
+
+.es-dots--field {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* =============================================================================
+   SLIDE CANVAS
+   13.333in x 7.5in at 96dpi. The frame scales the canvas to whatever width it
+   is given, so a slide can sit inside a web page at any size and stay exact.
+   ========================================================================== */
+
+.es-slide-frame {
+  container-type: inline-size;
+  width: 100%;
+  aspect-ratio: var(--es-ratio-canvas);
+  overflow: hidden;
+  background-color: var(--es-colour-surface-page);
+}
+
+.es-slide-frame { position: relative; }
+
+/* The canvas never responds to the viewport — it is a fixed 1280 x 720 artboard
+   that happens to be scaled for display. Re-assert the measured display sizes
+   so the fluid web clamps do not reach inside a slide. */
+.es-canvas,
+.es-frame__inner { --es-text-display: var(--es-text-display-fixed); --es-text-section: var(--es-text-section-fixed); }
+
+.es-canvas {
+  position: absolute; /* out of flow, so the frame's aspect-ratio governs its height */
+  top: 0;
+  left: 0;
+  width: var(--es-layout-canvas-w);
+  height: var(--es-layout-canvas-h);
+  transform-origin: top left;
+  transform: scale(calc(100cqw / var(--es-layout-canvas-w)));
+  background-color: var(--es-surface, var(--es-colour-surface-page));
+  color: var(--es-text, var(--es-colour-text-primary));
+  overflow: hidden;
+}
+
+.es-canvas__content {
+  position: absolute;
+  inset: var(--es-layout-margin-top) auto auto var(--es-layout-margin-x);
+  width: var(--es-layout-content-w);
+  display: grid;
+  gap: var(--es-space-md);
+  align-content: start;
+}
+
+/* --- persistent chrome, on every content slide ---------------------------- */
+
+/* Cyan stripe, right edge, full bleed. Present on covers and dividers too. */
+.es-canvas__stripe {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: var(--es-layout-stripe-w);
+  height: 100%;
+  background-color: var(--es-colour-surface-accent);
+}
+
+/* Page number tab. Slate, same width as the stripe, sitting in its lower end.
+   Number format is `13.` — the full stop is part of the convention. */
+.es-canvas__page {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: var(--es-layout-stripe-w);
+  height: calc(var(--es-layout-canvas-h) * 0.097);
+  background-color: var(--es-colour-surface-inverse-muted);
+  color: var(--es-colour-text-on-inverse);
+  display: grid;
+  place-items: center;
+  font-size: var(--es-text-caption);
+  line-height: var(--es-leading-flat);
+}
+
+/* Footer: hairline, source line, logo. One source line only — never repeat the
+   client and project in an eyebrow as well. */
+.es-canvas__footer {
+  position: absolute;
+  left: var(--es-layout-margin-x);
+  right: calc(var(--es-layout-stripe-w) + var(--es-space-md));
+  bottom: var(--es-space-sm);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--es-space-md);
+}
+
+.es-canvas__source {
+  padding-top: var(--es-space-2xs);
+  border-top: var(--es-border-hairline) solid var(--es-colour-border-hairline);
+  width: var(--es-layout-rule-w);
+  font-size: var(--es-text-caption);
+  line-height: var(--es-leading-snug);
+  color: var(--es-colour-text-link);
+}
+
+[data-surface="inverse"] .es-canvas__source,
+.es-canvas--photo .es-canvas__source {
+  border-top-color: var(--es-colour-text-on-inverse-muted);
+  color: var(--es-colour-text-on-inverse-muted);
+}
+
+.es-canvas__logo { margin-top: 0; }
+
+/* Audience badge sits top right of the title block, flush to the stripe. */
+.es-canvas__audience {
+  position: absolute;
+  top: var(--es-space-2xl);
+  right: var(--es-layout-stripe-w);
+}
+
+/* --- canvas variants ------------------------------------------------------ */
+
+/* Cover: full navy, logo above the title, client and date low left. The cover
+   lock-up measures ~240px on the source canvas — roughly twice the footer size. */
+.es-canvas--cover .es-logo { width: calc(var(--es-layout-logo-w) * 1.875); }
+
+.es-canvas--cover .es-canvas__content {
+  inset: auto auto auto var(--es-layout-margin-x);
+  top: calc(var(--es-layout-canvas-h) * 0.24);
+  gap: var(--es-space-md);
+}
+
+/* Divider: full-bleed photograph under a navy overlay, title vertically centred. */
+.es-canvas--photo { color: var(--es-colour-text-on-inverse); }
+
+.es-canvas__photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.es-canvas__overlay {
+  position: absolute;
+  inset: 0;
+  background-color: var(--es-colour-surface-overlay);
+}
+
+.es-canvas--photo .es-canvas__content,
+.es-canvas--divider .es-canvas__content {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* The numbered divider's outlined circle, for reports long enough to need
+   navigation. */
+.es-divider-number {
+  display: grid;
+  place-items: center;
+  width: var(--es-space-5xl);
+  height: var(--es-space-5xl);
+  border: var(--es-space-3xs) solid var(--es-colour-surface-accent);
+  border-radius: var(--es-radius-circle);
+  background-color: var(--es-colour-surface-page);
+  color: var(--es-colour-text-strong);
+  font-family: var(--es-font-display);
+  font-size: var(--es-text-section);
+  font-weight: var(--es-weight-bold);
+  line-height: var(--es-leading-flat);
+}
+
+/* Two-column finding layout: analysis left, evidence right. */
+.es-split {
+  display: grid;
+  grid-template-columns: minmax(0, var(--es-layout-split-primary)) minmax(0, var(--es-layout-split-secondary));
+  gap: var(--es-space-lg);
+  align-items: start;
+}
+
+.es-split--even { grid-template-columns: 1fr 1fr; }
+.es-split > * { min-width: 0; }
+
+@media (max-width: 48rem) {
+  .es-split, .es-split--even { grid-template-columns: 1fr; }
+}
+
+/* The canvas is a fixed 1280px element scaled by transform, so a viewport media
+   query must not collapse its columns — the slide is the same slide whatever
+   size the browser window is. Higher specificity, declared after the query. */
+.es-canvas .es-split { grid-template-columns: minmax(0, var(--es-layout-split-primary)) minmax(0, var(--es-layout-split-secondary)); }
+.es-canvas .es-split--even { grid-template-columns: 1fr 1fr; }
+
+/* =============================================================================
+   SOCIAL FRAMES
+   Fixed-ratio canvases for feed and carousel work. Same chrome vocabulary,
+   scaled: the stripe becomes a bottom bar because a right-edge stripe reads as
+   a rendering error at 1:1.
+   ========================================================================== */
+
+.es-frame {
+  container-type: inline-size;
+  width: 100%;
+  overflow: hidden;
+}
+
+.es-frame__inner {
+  position: relative;
+  width: var(--es-frame-w, var(--es-frame-square-w));
+  height: var(--es-frame-h, var(--es-frame-square-w));
+  transform-origin: top left;
+  transform: scale(calc(100cqw / var(--es-frame-w, var(--es-frame-square-w))));
+  display: grid;
+  align-content: space-between;
+  gap: var(--es-space-lg);
+  padding: var(--es-space-3xl);
+  background-color: var(--es-surface, var(--es-colour-surface-inverse));
+  color: var(--es-text, var(--es-colour-text-on-inverse));
+}
+
+.es-frame[data-ratio="1x1"] { aspect-ratio: var(--es-ratio-square); }
+.es-frame[data-ratio="4x5"] { aspect-ratio: var(--es-ratio-portrait); --es-frame-w: var(--es-frame-portrait-w); --es-frame-h: var(--es-frame-portrait-h); }
+.es-frame[data-ratio="9x16"]{ aspect-ratio: var(--es-ratio-story); --es-frame-w: var(--es-frame-story-w); --es-frame-h: var(--es-frame-story-h); }
+
+/* On a 1080 canvas the footer lock-up size disappears. Scale with the frame. */
+[data-context="social"] .es-logo { width: calc(var(--es-layout-logo-w) * 1.75); }
+
+.es-frame__bar {
+  height: var(--es-space-xs);
+  background-color: var(--es-colour-surface-accent);
+  width: 100%;
+}
+
+.es-frame__foot {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--es-space-md);
+}
+
+/* =============================================================================
+   WEB PAGE FURNITURE
+   [INFERRED] in full — the corpus has no web precedent. Derived from the slide
+   chrome: the stripe becomes the site's top rule, the footer hairline becomes
+   the section rule, and the source line becomes the site footer's colophon.
+   ========================================================================== */
+
+/* min-width:0 on the rows stops a wide descendant widening the whole document —
+   a grid item's automatic minimum size is its min-content, which otherwise
+   propagates all the way up and forces a horizontal scrollbar. */
+.es-page { display: grid; grid-template-rows: auto 1fr auto; min-height: 100vh; }
+.es-page > * { min-width: 0; }
+
+/* --- header + nav --------------------------------------------------------- */
+
+.es-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: var(--es-colour-surface-page);
+  border-bottom: var(--es-border-hairline) solid var(--es-colour-border-hairline);
+}
+
+.es-header__inner {
+  max-width: var(--es-layout-content-max);
+  margin-inline: auto;
+  padding: var(--es-space-sm) var(--es-space-lg);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--es-space-md) var(--es-space-lg);
+}
+
+/* The site header carries the lock-up larger than a slide footer does — a
+   report footer can run it at the 128px floor, a masthead should not. */
+.es-header .es-logo { width: calc(var(--es-layout-logo-w) * 1.5); }
+
+.es-nav { display: flex; flex-wrap: wrap; align-items: center; gap: var(--es-space-sm) var(--es-space-md); margin-left: auto; }
+
+.es-nav__link {
+  position: relative;
+  padding: var(--es-space-2xs) 0;
+  color: var(--es-colour-text-primary);
+  font-size: var(--es-text-lead);
+  font-weight: var(--es-weight-bold);
+  text-decoration: none;
+}
+
+.es-nav__link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: var(--es-space-3xs);
+  background-color: var(--es-colour-surface-accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--es-motion-duration-base) var(--es-motion-ease-standard);
+}
+
+.es-nav__link:hover::after,
+.es-nav__link[aria-current="page"]::after { transform: scaleX(1); }
+.es-nav__link[aria-current="page"] { color: var(--es-colour-text-heading); }
+
+@media (max-width: 48rem) {
+  .es-nav { width: 100%; margin-left: 0; gap: var(--es-space-sm); }
+}
+
+/* --- section wrapper ------------------------------------------------------ */
+
+.es-section { padding-block: var(--es-space-3xl); }
+.es-section--tight { padding-block: var(--es-space-2xl); }
+.es-section--flush { padding-block: 0; }
+
+.es-section__inner {
+  max-width: var(--es-layout-content-max);
+  margin-inline: auto;
+  padding-inline: var(--es-space-lg);
+}
+
+.es-section__head {
+  display: grid;
+  gap: var(--es-space-2xs);
+  margin-bottom: var(--es-space-xl);
+  max-width: var(--es-layout-measure);
+}
+
+/* The section rule is the slide's footer hairline, promoted. */
+.es-section--ruled { border-top: var(--es-border-hairline) solid var(--es-colour-border-hairline); }
+
+/* --- hero ----------------------------------------------------------------- */
+
+.es-hero {
+  position: relative;
+  overflow: hidden;
+  padding-block: var(--es-space-5xl);
+  background-color: var(--es-colour-surface-inverse);
+  color: var(--es-colour-text-on-inverse);
+}
+
+.es-hero__inner {
+  position: relative;
+  z-index: 1;
+  max-width: var(--es-layout-content-max);
+  margin-inline: auto;
+  padding-inline: var(--es-space-lg);
+  display: grid;
+  gap: var(--es-space-md);
+}
+
+.es-hero__copy { max-width: 24ch; }
+.es-hero__standfirst { max-width: 52ch; font-size: var(--es-text-subhead); line-height: var(--es-leading-normal); color: var(--es-colour-text-on-inverse-muted); }
+.es-hero__actions { margin-top: var(--es-space-sm); }
+
+/* The dot field enters from the right, resolving towards the edge — the same
+   direction the identity's own pattern runs. */
+.es-hero__pattern {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 46%;
+  height: 100%;
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+@media (max-width: 48rem) {
+  .es-hero { padding-block: var(--es-space-3xl); }
+  .es-hero__pattern { display: none; }
+}
+
+/* --- CTA band ------------------------------------------------------------- */
+
+.es-cta {
+  background-color: var(--es-colour-surface-accent);
+  color: var(--es-colour-text-on-accent);
+}
+
+.es-cta__inner {
+  max-width: var(--es-layout-content-max);
+  margin-inline: auto;
+  padding: var(--es-space-3xl) var(--es-space-lg);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--es-space-lg);
+}
+
+.es-cta__copy { max-width: 42ch; display: grid; gap: var(--es-space-2xs); }
+.es-cta__title { font-family: var(--es-font-display); font-size: var(--es-text-heading); font-weight: var(--es-weight-bold); line-height: var(--es-leading-tight); }
+.es-cta .es-button--secondary { border-color: var(--es-colour-surface-inverse); }
+
+.es-cta[data-tone="inverse"] { background-color: var(--es-colour-surface-inverse); color: var(--es-colour-text-on-inverse); }
+
+/* --- footer --------------------------------------------------------------- */
+
+.es-footer {
+  background-color: var(--es-colour-surface-inverse);
+  color: var(--es-colour-text-on-inverse);
+}
+
+.es-footer__inner {
+  max-width: var(--es-layout-content-max);
+  margin-inline: auto;
+  padding: var(--es-space-3xl) var(--es-space-lg) var(--es-space-xl);
+  display: grid;
+  gap: var(--es-space-xl);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+@media (max-width: 60rem) { .es-footer__inner { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 40rem) { .es-footer__inner { grid-template-columns: minmax(0, 1fr); } }
+
+.es-footer__title {
+  font-size: var(--es-text-caption);
+  font-weight: var(--es-weight-bold);
+  letter-spacing: var(--es-tracking-wide);
+  text-transform: uppercase;
+  color: var(--es-colour-surface-highlight);
+  margin-bottom: var(--es-space-2xs);
+}
+
+.es-footer__list { list-style: none; display: grid; gap: var(--es-space-2xs); font-size: var(--es-text-lead); }
+.es-footer__list a { color: var(--es-colour-text-on-inverse); text-decoration: none; }
+.es-footer__list a:hover { color: var(--es-colour-surface-highlight); text-decoration: underline; }
+
+.es-footer__colophon {
+  max-width: var(--es-layout-content-max);
+  margin-inline: auto;
+  padding: var(--es-space-md) var(--es-space-lg) var(--es-space-2xl);
+  border-top: var(--es-border-hairline) solid var(--es-colour-border-inverse);
+  font-size: var(--es-text-caption);
+  color: var(--es-colour-text-on-inverse-muted);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--es-space-md);
+  justify-content: space-between;
+}
+
+/* --- long-form document --------------------------------------------------- */
+
+.es-doc {
+  max-width: var(--es-layout-measure);
+  margin-inline: auto;
+  display: grid;
+  gap: var(--es-space-md);
+}
+
+.es-doc > *,
+.es-report > * { min-width: 0; }
+
+.es-doc > h2 {
+  font-family: var(--es-font-display);
+  font-size: var(--es-text-heading);
+  font-weight: var(--es-weight-bold);
+  line-height: var(--es-leading-tight);
+  color: var(--es-colour-text-heading);
+  margin-top: var(--es-space-xl);
+}
+
+.es-doc > h3 {
+  font-family: var(--es-font-display);
+  font-size: var(--es-text-subhead);
+  font-weight: var(--es-weight-bold);
+  color: var(--es-colour-surface-inverse);
+  margin-top: var(--es-space-md);
+}
+
+.es-doc > p { line-height: var(--es-leading-normal); }
+
+/* Report shell: sticky contents rail beside the body. */
+.es-report {
+  max-width: var(--es-layout-content-max);
+  margin-inline: auto;
+  padding: var(--es-space-3xl) var(--es-space-lg);
+  display: grid;
+  grid-template-columns: minmax(min(11rem, 100%), 14rem) minmax(0, 1fr);
+  gap: var(--es-space-3xl);
+  align-items: start;
+}
+
+.es-report__rail { position: sticky; top: var(--es-space-4xl); display: grid; gap: var(--es-space-sm); }
+
+.es-report__contents { list-style: none; display: grid; gap: var(--es-space-2xs); font-size: var(--es-text-lead); }
+.es-report__contents a { color: var(--es-colour-text-primary); text-decoration: none; padding-left: var(--es-space-2xs); border-left: var(--es-border-emphasis) solid transparent; display: block; }
+.es-report__contents a:hover { color: var(--es-colour-text-heading); }
+.es-report__contents a[aria-current="true"] { border-left-color: var(--es-colour-surface-accent); color: var(--es-colour-text-heading); font-weight: var(--es-weight-bold); }
+
+@media (max-width: 60rem) {
+  .es-report { grid-template-columns: 1fr; gap: var(--es-space-xl); }
+  .es-report__rail { position: static; }
+}
+
+/* --- generic bands -------------------------------------------------------- */
+
+.es-band { padding-block: var(--es-space-3xl); }
+.es-band__inner { max-width: var(--es-layout-content-max); margin-inline: auto; padding-inline: var(--es-space-lg); }
+.es-band--pattern { position: relative; overflow: hidden; }
+
+@media print {
+  .es-header, .es-nav, .es-cta { display: none; }
+  .es-page { min-height: 0; }
+}

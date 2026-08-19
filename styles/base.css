@@ -1,0 +1,233 @@
+/* =============================================================================
+   Essential Research — base
+   Reset, document defaults and the type primitives. Tokens only; no literals.
+   ========================================================================== */
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  font-size: var(--es-type-root); /* the type scale is authored slide-true against this anchor */
+}
+
+body {
+  margin: 0;
+  background-color: var(--es-colour-surface-page);
+  color: var(--es-colour-text-primary);
+  font-family: var(--es-font-body);
+  font-size: var(--es-text-body);
+  font-weight: var(--es-weight-regular);
+  line-height: var(--es-leading-snug);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+img,
+svg,
+video { display: block; max-width: 100%; }
+
+img { height: auto; }
+
+ul, ol { margin: 0; padding: 0; }
+figure, blockquote, p, h1, h2, h3, h4, h5, h6 { margin: 0; }
+
+button, input, select, textarea {
+  font: inherit;
+  color: inherit;
+  margin: 0;
+}
+
+hr {
+  border: 0;
+  border-top: var(--es-border-hairline) solid var(--es-rule, var(--es-colour-border-hairline));
+  margin: var(--es-space-lg) 0;
+}
+
+/* -----------------------------------------------------------------------------
+   Focus
+   Gold is the only brand colour that clears both the light and the dark
+   surfaces this system uses, so it carries focus everywhere.
+   -------------------------------------------------------------------------- */
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: var(--es-border-emphasis) solid var(--es-colour-border-focus);
+  outline-offset: var(--es-focus-offset);
+  border-radius: var(--es-radius-control);
+}
+
+::selection {
+  background-color: var(--es-colour-surface-sunken);
+  color: var(--es-colour-text-strong);
+}
+
+/* =============================================================================
+   TYPE PRIMITIVES
+   Headings are cyan on light surfaces. That is the brand's defining typographic
+   move: navy is a surface, cyan is a voice. On inverse surfaces headings go
+   white, because cyan on navy fails contrast.
+   ========================================================================== */
+
+.es-display,
+.es-section-title,
+.es-title,
+.es-heading {
+  font-family: var(--es-font-display);
+  font-weight: var(--es-weight-bold);
+  line-height: var(--es-leading-tight);
+  letter-spacing: var(--es-tracking-tight);
+  color: var(--es-heading);
+}
+
+/* Cover and divider titles are short enough to balance. Finding titles are not:
+   they run to three lines and the corpus wraps them greedily, edge to edge.
+   Balancing them shortens the measure and changes the geometry of the slide. */
+.es-display,
+.es-section-title { text-wrap: balance; }
+.es-title { text-wrap: pretty; }
+
+.es-display      { font-size: var(--es-text-display); }
+.es-section-title{ font-size: var(--es-text-section); }
+/* No max-width: on a slide the canvas content column already sets the measure
+   (1070px, which is where the three-line ceiling comes from), and in long-form
+   the .es-doc measure applies. Capping it here forces false line breaks. */
+.es-title        { font-size: var(--es-text-title); }
+.es-heading      { font-size: var(--es-text-heading); letter-spacing: var(--es-tracking-normal); }
+
+/* The two-tone finding title: frame name in ink, finding in cyan.
+   Used across the message-testing sections. */
+.es-title__frame { color: var(--es-colour-text-heading-alt); }
+
+.es-subhead {
+  font-family: var(--es-font-display);
+  font-size: var(--es-text-subhead);
+  font-weight: var(--es-weight-bold);
+  line-height: var(--es-leading-snug);
+  color: var(--es-text);
+}
+
+/* The eyebrow takes its tracking from the RESEARCH lock-up under the wordmark,
+   which is the only tracked type in the identity. */
+.es-eyebrow {
+  font-family: var(--es-font-body);
+  font-size: var(--es-text-caption);
+  font-weight: var(--es-weight-bold);
+  letter-spacing: var(--es-tracking-wide);
+  text-transform: uppercase;
+  color: var(--es-colour-text-heading);
+  margin: 0 0 var(--es-space-xs);
+}
+
+[data-surface="inverse"] .es-eyebrow,
+[data-surface="inverse-muted"] .es-eyebrow { color: var(--es-colour-surface-highlight); }
+
+/* The bold lead-in line that frames the evidence beneath it. Structural, not
+   decorative — every strong finding slide in the corpus opens with one. */
+.es-lead {
+  font-size: var(--es-text-lead);
+  font-weight: var(--es-weight-bold);
+  line-height: var(--es-leading-snug);
+  color: var(--es-text);
+  margin: 0 0 var(--es-space-sm);
+}
+
+.es-body { font-size: var(--es-text-body); line-height: var(--es-leading-snug); }
+.es-body + .es-body { margin-top: var(--es-space-sm); }
+
+.es-caption {
+  font-size: var(--es-text-caption);
+  line-height: var(--es-leading-snug);
+  color: var(--es-colour-text-muted);
+}
+
+.es-measure { max-width: var(--es-layout-measure); }
+
+/* -----------------------------------------------------------------------------
+   Lists
+   Bullets are cyan; the label runs bold and the explanation runs on. This is the
+   corpus's standard evidence list, not a generic <ul>.
+   -------------------------------------------------------------------------- */
+.es-list {
+  list-style: none;
+  display: grid;
+  gap: var(--es-space-sm);
+  font-size: var(--es-text-body);
+  line-height: var(--es-leading-snug);
+}
+
+.es-list > li {
+  position: relative;
+  padding-left: var(--es-space-md);
+}
+
+.es-list > li::before {
+  content: "";
+  position: absolute;
+  left: var(--es-space-3xs);
+  top: 0.45em;
+  width: 0.32em;
+  height: 0.32em;
+  border-radius: var(--es-radius-circle);
+  background-color: var(--es-colour-surface-accent);
+}
+
+[data-surface="inverse"] .es-list > li::before,
+[data-surface="inverse-muted"] .es-list > li::before {
+  background-color: var(--es-colour-surface-highlight);
+}
+
+.es-list__label {
+  font-weight: var(--es-weight-bold);
+  color: var(--es-text);
+}
+
+/* -----------------------------------------------------------------------------
+   Links
+   -------------------------------------------------------------------------- */
+.es-link {
+  color: var(--es-colour-text-link);
+  text-decoration: underline;
+  text-decoration-thickness: from-font;
+  text-underline-offset: 0.18em;
+  transition: color var(--es-motion-duration-fast) var(--es-motion-ease-standard);
+}
+
+.es-link:hover { color: var(--es-colour-surface-inverse); }
+.es-link:visited { color: var(--es-colour-text-link-visited); }
+
+[data-surface="inverse"] .es-link,
+[data-surface="inverse-muted"] .es-link { color: var(--es-colour-surface-highlight); }
+[data-surface="inverse"] .es-link:hover,
+[data-surface="inverse-muted"] .es-link:hover { color: var(--es-colour-text-on-inverse); }
+
+/* A link that reads as an action rather than a reference. */
+.es-link--arrow {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--es-space-2xs);
+  font-weight: var(--es-weight-bold);
+  text-decoration: none;
+}
+
+.es-link--arrow::after {
+  content: "\2192";
+  transition: transform var(--es-motion-duration-fast) var(--es-motion-ease-standard);
+}
+
+.es-link--arrow:hover::after { transform: translateX(0.2em); }
+
+/* -----------------------------------------------------------------------------
+   Utilities
+   -------------------------------------------------------------------------- */
+.es-visually-hidden {
+  position: absolute;
+  width: var(--es-border-hairline); height: var(--es-border-hairline);
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.es-stack { display: grid; gap: var(--es-space-md); }
+.es-stack--tight { gap: var(--es-space-sm); }
+.es-stack--loose { gap: var(--es-space-lg); }

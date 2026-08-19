@@ -1,0 +1,378 @@
+/* =============================================================================
+   Essential Research — design tokens
+   Single source of truth. Mirrored to tokens/tokens.json.
+
+   Provenance key, applied to every value below:
+     [theme]    ppt/theme/theme1.xml, clrScheme "Custom 6" / fontScheme
+     [svg]      ER/Screen/EPS/Secondary Research Logo *.svg
+     [xml]      slide-level XML in the Oxfam .pptx
+     [pdf]      font table of the NLA native PDF
+     [sampled]  pixel-sampled from a flat fill in reference/renders/
+     [measured] geometry measured from a render, normalised to 1280x720
+     [INFERRED] not present in any source asset — derived, with the basis stated
+
+   The corpus is slides and PDF only. There is no web or UI precedent in it, so
+   every control, state and motion token here is [INFERRED]. See DESIGN.md.
+   ========================================================================== */
+
+:root {
+
+  /* ---------------------------------------------------------------------------
+     COLOUR — surfaces
+     The brand runs light and dark surfaces side by side inside one document.
+     These are surface *roles*, not a light/dark theme. Dark surfaces are opted
+     into with [data-surface="inverse"], never inherited from the viewer's OS.
+     ------------------------------------------------------------------------ */
+  --es-colour-surface-page:            #FFFFFF; /* [theme] lt1 */
+  --es-colour-surface-raised:          #F2F2F2; /* [sampled] every NLA card body */
+  --es-colour-surface-sunken:          #E0EEF8; /* [theme] accent6 — quote cards, Q/Base band */
+  --es-colour-surface-wash:            #EDFAFF; /* [sampled] executive-summary full bleed */
+  --es-colour-surface-inverse:         #203F50; /* [theme] accent1 — cover, panels, back cover */
+  --es-colour-surface-inverse-muted:   #3F6071; /* [sampled] IMPROVE panel, phase-2 header, page tab */
+  --es-colour-surface-inverse-deep:    #18303C; /* [sampled] final chevron stage */
+  --es-colour-surface-accent:          #00ACED; /* [theme] accent4 + hlink */
+  --es-colour-surface-highlight:       #FFC000; /* [sampled][xml] badges, phase-1 header, verdict pills */
+  --es-colour-surface-overlay:         rgba(32, 63, 80, 0.82); /* [measured] divider photo overlay */
+
+  /* ---------------------------------------------------------------------------
+     COLOUR — text
+     Note the unusual rule this brand actually follows: headings are CYAN on
+     light surfaces, not navy. Navy is a surface colour, cyan is a voice.
+     ------------------------------------------------------------------------ */
+  --es-colour-text-primary:            #4E4E50; /* [theme] dk1/dk2 [svg] wordmark */
+  --es-colour-text-strong:             #202020; /* [sampled] public audience badge, high-contrast body */
+  --es-colour-text-heading:            #00ACED; /* [sampled] every finding title in the gold set */
+  --es-colour-text-heading-alt:        #203F50; /* [sampled] two-tone title, frame-name half */
+  --es-colour-text-muted:              rgba(78, 78, 80, 0.68); /* [INFERRED] no grey secondary text exists in the corpus; derived from text-primary */
+  --es-colour-text-on-inverse:         #FFFFFF; /* [sampled] */
+  --es-colour-text-on-inverse-muted:   rgba(255, 255, 255, 0.72); /* [INFERRED] divider footer reads lighter than body */
+  --es-colour-text-on-accent:          #FFFFFF; /* [INFERRED] no cyan-filled text block in corpus */
+  --es-colour-text-on-highlight:       #203F50; /* [sampled] PHASE 1 label on gold */
+  --es-colour-text-link:               #00ACED; /* [theme] hlink */
+  --es-colour-text-link-visited:       #00ACED; /* [theme] folHlink — deliberately identical */
+
+  /* ---------------------------------------------------------------------------
+     COLOUR — borders
+     ------------------------------------------------------------------------ */
+  --es-colour-border-hairline:         rgba(0, 172, 237, 0.55); /* [measured] footer rule */
+  --es-colour-border-accent:           #00ACED; /* [sampled] commentary box outline */
+  --es-colour-border-subtle:           #DEDEDE; /* [sampled] chart gridline / divider */
+  --es-colour-border-inverse:          #3F6071; /* [sampled] verdict pill stroke on navy */
+  --es-colour-border-focus:            #FFC000; /* [INFERRED] gold is the only colour that clears both light and dark surfaces */
+
+  /* ---------------------------------------------------------------------------
+     COLOUR — evidence annotation
+     The verbatim-highlighting legend. These are semantic, not decorative:
+     the reader is told what each colour means in the legend beneath the panel.
+     ------------------------------------------------------------------------ */
+  --es-colour-evidence-agree:          #C8E8AD; /* [xml] "AGREE" */
+  --es-colour-evidence-disagree:       #F9A4AB; /* [xml] "DISAGREE" */
+  --es-colour-evidence-polarising:     #FDE19F; /* [xml] "POLARISING/CONFUSING" */
+
+  /* ---------------------------------------------------------------------------
+     COLOUR — data
+     Two distinct systems. Do not mix them in one chart.
+     Categorical: comparing named audiences.
+     Scale: an ordered Likert or attention battery.
+     ------------------------------------------------------------------------ */
+  --es-colour-data-1:                  #203F50; /* [theme] primary / first-named audience */
+  --es-colour-data-2:                  #00ACED; /* [theme] */
+  --es-colour-data-3:                  #5BD0FE; /* [theme] accent2 */
+  --es-colour-data-4:                  #D96968; /* [theme] accent3 */
+  --es-colour-data-5:                  #8DB9D2; /* [sampled] */
+  --es-colour-data-neutral:            #BFBFBF; /* [sampled] Unsure / Don't know */
+  --es-colour-data-inactive:           #A6A6A6; /* [sampled] steps the audience cannot make */
+
+  --es-colour-scale-5:                 #203F50; /* [sampled] most positive / most attention */
+  --es-colour-scale-4:                 #5BD0FE; /* [sampled] */
+  --es-colour-scale-3:                 #D96968; /* [sampled] */
+  --es-colour-scale-2:                 #C03230; /* [sampled] */
+  --es-colour-scale-1:                 #BFBFBF; /* [sampled] don't know — sits outside the ramp */
+
+  /* Sequential ramp, light to dark. Methodology chevrons. */
+  --es-colour-ramp-1:                  #8DB9D2; /* [sampled] */
+  --es-colour-ramp-2:                  #5597BA; /* [sampled] */
+  --es-colour-ramp-3:                  #203F50; /* [sampled] */
+  --es-colour-ramp-4:                  #18303C; /* [sampled] */
+
+  /* ---------------------------------------------------------------------------
+     COLOUR — status
+     [INFERRED] in full. The corpus has no success/warning/error vocabulary.
+     Mapped onto colours the brand already owns rather than introducing new hues.
+     ------------------------------------------------------------------------ */
+  --es-colour-status-info:             #00ACED; /* [INFERRED] mapped onto the accent */
+  --es-colour-status-success:          #91CE4D; /* [xml] appears as an annotation weight */
+  --es-colour-status-caution:          #FFC000; /* [INFERRED] mapped onto the highlight */
+  --es-colour-status-critical:         #C03230; /* [INFERRED] mapped onto the deepest scale step */
+
+  /* ---------------------------------------------------------------------------
+     TYPE — families
+     Aptos ships with Microsoft 365. It is not licensed for webfont embedding
+     and no font files were supplied, so it is referenced by name only and the
+     stack must survive its absence. Fallbacks are [INFERRED]; Aptos is a
+     neo-grotesque, so grotesque fallbacks hold the colour of the page.
+     ------------------------------------------------------------------------ */
+  --es-font-display: "Aptos Display", "Aptos", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif; /* [theme] majorFont [pdf] */
+  --es-font-body:    "Aptos", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;                  /* [theme] minorFont [pdf] */
+  --es-font-mono:    ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace; /* [INFERRED] */
+
+  /* ---------------------------------------------------------------------------
+     TYPE — scale
+     Slide-true. Point sizes are the measured values; px equivalents are at the
+     96dpi the 13.333in x 7.5in canvas is authored against. Long-form contexts
+     raise body/lead/quote one step — see [data-context="longform"] below.
+
+     Display and section were derived by ratio against the 28pt title, which is
+     known from file XML: on the NLA renders the cover title's ink height is
+     exactly 2.0x the finding title's and the divider title's is 1.74x. Both
+     measurements come off the same render pipeline, so the systematic error
+     cancels. This corrects the 40pt / 32pt estimates in the earlier reference
+     pack. There is no separate section-label size on a slide — "Research
+     Design" measures 28pt, the same as every finding title.
+     ------------------------------------------------------------------------ */
+  /* The two display sizes are fluid on the web and exact on the canvas: a 56pt
+     word does not fit a phone. .es-canvas re-asserts the measured values, so a
+     slide is the same slide at any browser width. See styles/patterns.css. */
+  --es-text-display:  clamp(2.25rem, 7vw, 4.667rem); /* 56pt / 74.67px at full size — [measured] cover title */
+  --es-text-section:  clamp(1.875rem, 5.5vw, 4rem);  /* 48pt / 64px at full size — [measured] divider title */
+  --es-text-display-fixed: 4.667rem; /* [measured] the canvas value, unclamped */
+  --es-text-section-fixed: 4rem;     /* [measured] the canvas value, unclamped */
+  --es-text-title:    2.333rem; /* 28pt / 37.33px — [xml] finding title, and the section label with it. Measured on all 48 NLA titles. */
+  --es-text-heading:  1.667rem; /* 20pt / 26.67px — [INFERRED] no 20pt step exists on a slide; long-form web needs one between title and subhead */
+  --es-text-subhead:  1.125rem; /* 13.5pt / 18px — [INFERRED] second gap in the scale, needed for web */
+  --es-text-lead:     0.917rem; /* 11pt / 14.67px — [measured] bold lead-in above bullets */
+  --es-text-body:     0.833rem; /* 10pt / 13.33px — [measured] */
+  --es-text-quote:    0.750rem; /* 9pt / 12px — [measured] */
+  --es-text-caption:  0.667rem; /* 8pt / 10.67px — [measured] footer, Q/Base line, attribution */
+
+  /* ---------------------------------------------------------------------------
+     TYPE — weight, leading, tracking
+     ------------------------------------------------------------------------ */
+  --es-weight-regular:  400; /* [pdf] Aptos Regular */
+  --es-weight-medium:   500; /* [INFERRED] Aptos has no 500 in the corpus; used for UI labels only */
+  --es-weight-bold:     700; /* [pdf] Aptos Bold / Aptos Display Bold */
+
+  --es-leading-tight:   1.09; /* [measured] 40.8px pitch on a 37.33px em, all NLA titles */
+  --es-leading-snug:    1.20; /* [xml] lnSpc spcPct 100000 on body */
+  --es-leading-normal:  1.55; /* [INFERRED] long-form web reading */
+  --es-leading-flat:    1.00; /* [INFERRED] single-line labels and numerals */
+
+  --es-tracking-tight:  -0.01em; /* [INFERRED] large display sizes only */
+  --es-tracking-normal:  0;
+  --es-tracking-wide:    0.09em; /* [svg] derived from the RESEARCH lock-up under the wordmark */
+
+  /* ---------------------------------------------------------------------------
+     SPACE
+     Base unit 4px. The named layout values are measured, the generic steps are
+     the smallest ladder that contains them.
+     ------------------------------------------------------------------------ */
+  --es-space-3xs:  0.25rem; /*  4px — [INFERRED] base unit of the ladder */
+  --es-space-2xs:  0.5rem;  /*  8px — [INFERRED] */
+  --es-space-xs:   0.75rem; /* 12px — [INFERRED] */
+  --es-space-sm:   1rem;    /* 16px — [INFERRED] */
+  --es-space-md:   1.5rem;  /* 24px — [measured] standard gap between cards */
+  --es-space-lg:   2rem;    /* 32px — [INFERRED] */
+  --es-space-xl:   2.5rem;  /* 40px — [INFERRED] */
+  --es-space-2xl:  3rem;    /* 48px — [INFERRED] */
+  --es-space-3xl:  4rem;    /* 64px — [INFERRED] */
+  --es-space-4xl:  5rem;    /* 80px — [measured] canvas left margin */
+  --es-space-5xl:  7.5rem;  /* 120px — [INFERRED] */
+
+  /* ---------------------------------------------------------------------------
+     LAYOUT
+     All measured from the NLA renders, normalised to the 1280x720 canvas.
+     ------------------------------------------------------------------------ */
+  --es-type-root:             16px;  /* [INFERRED] the anchor the rem scale is authored against */
+  --es-layout-canvas-w:      1280px; /* [measured] 13.333in @ 96dpi */
+  --es-layout-canvas-h:       720px; /* [measured] 7.5in @ 96dpi */
+  --es-ratio-canvas:         16 / 9;  /* [measured] the deck canvas */
+  --es-ratio-square:          1 / 1;  /* [INFERRED] social — no precedent in the corpus */
+  --es-ratio-portrait:        4 / 5;  /* [INFERRED] social feed */
+  --es-ratio-story:          9 / 16;  /* [INFERRED] story and reel */
+  --es-frame-square-w:      1080px;   /* [INFERRED] social export sizes — no precedent in the corpus */
+  --es-frame-portrait-w:    1080px;   /* [INFERRED] */
+  --es-frame-portrait-h:    1350px;   /* [INFERRED] */
+  --es-frame-story-w:       1080px;   /* [INFERRED] */
+  --es-frame-story-h:       1920px;   /* [INFERRED] */
+  --es-layout-margin-x:        80px; /* [measured] 0.83in. Corrects the 48px in the earlier reference pack. */
+  --es-layout-margin-top:      48px; /* [measured] cap-top of the title lands at 58.4 */
+  --es-layout-content-w:     1070px; /* [measured] 80 to 1150 */
+  --es-layout-content-max:     72rem; /* [INFERRED] web reading measure ceiling */
+  --es-layout-measure:         68ch; /* [INFERRED] long-form line length */
+  --es-layout-stripe-w:        38px; /* [measured] 37.6. Corrects the 18px in the earlier reference pack. */
+  --es-layout-rule-w:          34%;  /* [measured] 435px of 1280 */
+  --es-layout-title-block:    122px; /* [measured] three lines at 28pt, leading 1.09 */
+  --es-layout-badge:           72px; /* [measured] 69.6 */
+  --es-layout-logo-w:         128px; /* [measured] 127.2 in slide footers */
+  --es-layout-logo-min-w:     120px; /* [INFERRED] legibility floor for the RESEARCH lock-up */
+  --es-layout-logo-clear:     0.042; /* [svg] one dot diameter, as a fraction of logo width */
+  --es-layout-gutter:      var(--es-space-md);
+  --es-layout-columns:            12; /* [INFERRED] no grid underlies the corpus; 12 fits both observed splits */
+  --es-layout-split-primary:    55fr; /* [measured] analysis column, 55% of the content width */
+  --es-layout-split-secondary:  45fr; /* [measured] evidence column. Expressed in fr so the gap comes out of the tracks, not the container. */
+
+  /* ---------------------------------------------------------------------------
+     RADIUS
+     ------------------------------------------------------------------------ */
+  --es-radius-none:    0;      /* [measured] phase cards, comparison cards, commentary boxes, chart bars */
+  --es-radius-card:    10px;   /* [measured] quote cards, testing panels */
+  --es-radius-control: 6px;    /* [INFERRED] no control exists in the corpus; half the card radius */
+  --es-radius-pill:    999px;  /* [measured] verdict pills */
+  --es-radius-circle:  50%;    /* [measured] audience badges, photo crops, numbered divider */
+
+  /* ---------------------------------------------------------------------------
+     ELEVATION
+     There is not one shadow in twenty reference renders. This brand separates
+     surfaces by fill and hairline, never by depth. The token set encodes that
+     rather than quietly opening a door.
+     ------------------------------------------------------------------------ */
+  --es-elevation-flat:    none; /* [measured] there is not one shadow in twenty reference renders */
+  --es-elevation-raised:  none; /* [measured] deliberate: raise by changing surface, not by casting a shadow */
+  --es-elevation-overlay: 0 2px 8px rgba(32, 63, 80, 0.16); /* [INFERRED] web only — menus, dialogs, nothing on canvas */
+
+  /* ---------------------------------------------------------------------------
+     BORDER
+     ------------------------------------------------------------------------ */
+  --es-border-hairline: 1px;  /* [measured] footer rule, commentary outline */
+  --es-border-emphasis: 2px;  /* [measured] verdict pill stroke */
+  --es-border-marker:   4px;  /* [INFERRED] left-marker rule on pull quotes */
+  --es-focus-offset:    2px;  /* [INFERRED] focus ring standoff */
+  --es-focus-offset-inset: 1px; /* [INFERRED] where the control already has a border */
+
+  /* ---------------------------------------------------------------------------
+     PATTERN — the dot field
+     One colour at five opacity steps on a square grid. Density and opacity both
+     ramp, so scattered points resolve into a solid block. This is the brand's
+     only visual metaphor and it is load-bearing.
+     ------------------------------------------------------------------------ */
+  --es-pattern-dot-colour: #00ACED; /* [sampled] all seven pattern files, single hue */
+  --es-pattern-pitch:      34.7px;  /* [measured] */
+  --es-pattern-dot-size:   13px;    /* [measured] 0.375 x pitch */
+  --es-pattern-step-1:     0.20;    /* [measured] alpha 51 */
+  --es-pattern-step-2:     0.40;    /* [measured] alpha 102 */
+  --es-pattern-step-3:     0.55;    /* [measured] alpha 140 */
+  --es-pattern-step-4:     0.75;    /* [measured] alpha 191 */
+  --es-pattern-step-5:     1.00;    /* [measured] alpha 255 */
+
+  /* ---------------------------------------------------------------------------
+     MOTION
+     [INFERRED] in full. The corpus is static. Kept short and unshowy, because
+     an evidence brand should not appear to be performing.
+     ------------------------------------------------------------------------ */
+  --es-motion-duration-instant: 0ms;    /* [INFERRED] */
+  --es-motion-duration-fast:    120ms;  /* [INFERRED] */
+  --es-motion-duration-base:    200ms;  /* [INFERRED] */
+  --es-motion-duration-slow:    320ms;  /* [INFERRED] */
+  --es-motion-ease-standard:    cubic-bezier(0.2, 0, 0, 1); /* [INFERRED] */
+  --es-motion-ease-entrance:    cubic-bezier(0, 0, 0, 1);   /* [INFERRED] */
+  --es-motion-ease-exit:        cubic-bezier(0.4, 0, 1, 1); /* [INFERRED] */
+
+  /* ---------------------------------------------------------------------------
+     SEMANTIC ALIASES — what a component reaches for
+     ------------------------------------------------------------------------ */
+  --es-surface:            var(--es-colour-surface-page);
+  --es-text:               var(--es-colour-text-primary);
+  --es-heading:            var(--es-colour-text-heading);
+  --es-rule:               var(--es-colour-border-hairline);
+  --es-card-surface:       var(--es-colour-surface-sunken);
+  --es-card-text:          var(--es-colour-text-primary);
+}
+
+/* =============================================================================
+   SURFACE SCOPES
+   The brand's dark surfaces are a deliberate editorial device, not an OS theme.
+   Opt in explicitly. Nested scopes work — a light card inside an inverse band
+   restores the light token set.
+   ========================================================================== */
+
+[data-surface="inverse"] {
+  --es-surface:      var(--es-colour-surface-inverse);
+  --es-text:         var(--es-colour-text-on-inverse);
+  --es-heading:      var(--es-colour-text-on-inverse);
+  --es-rule:         var(--es-colour-border-inverse);
+  --es-card-surface: var(--es-colour-surface-inverse-muted);
+  --es-card-text:    var(--es-colour-text-on-inverse);
+  color: var(--es-text);
+  background-color: var(--es-surface);
+}
+
+[data-surface="inverse-muted"] {
+  --es-surface:      var(--es-colour-surface-inverse-muted);
+  --es-text:         var(--es-colour-text-on-inverse);
+  --es-heading:      var(--es-colour-text-on-inverse);
+  --es-rule:         rgba(255, 255, 255, 0.28);
+  --es-card-surface: var(--es-colour-surface-inverse);
+  --es-card-text:    var(--es-colour-text-on-inverse);
+  color: var(--es-text);
+  background-color: var(--es-surface);
+}
+
+[data-surface="wash"] {
+  --es-surface:      var(--es-colour-surface-wash);
+  --es-text:         var(--es-colour-text-primary);
+  --es-heading:      var(--es-colour-text-heading);
+  --es-card-surface: var(--es-colour-surface-page);
+  color: var(--es-text);
+  background-color: var(--es-surface);
+}
+
+[data-surface="raised"] {
+  --es-surface:      var(--es-colour-surface-raised);
+  --es-text:         var(--es-colour-text-primary);
+  --es-heading:      var(--es-colour-text-heading);
+  --es-card-surface: var(--es-colour-surface-page);
+  color: var(--es-text);
+  background-color: var(--es-surface);
+}
+
+[data-surface="page"] {
+  --es-surface:      var(--es-colour-surface-page);
+  --es-text:         var(--es-colour-text-primary);
+  --es-heading:      var(--es-colour-text-heading);
+  --es-rule:         var(--es-colour-border-hairline);
+  --es-card-surface: var(--es-colour-surface-sunken);
+  --es-card-text:    var(--es-colour-text-primary);
+  color: var(--es-text);
+  background-color: var(--es-surface);
+}
+
+/* =============================================================================
+   READING CONTEXT
+   Slide-true type is too small for sustained screen reading. Long-form web
+   contexts raise three tokens and nothing else, so the scale stays one system.
+   [INFERRED] — no web precedent exists to measure.
+   ========================================================================== */
+
+[data-context="longform"] {
+  --es-text-lead:  1.125rem; /* 18px */
+  --es-text-body:  1rem;     /* 16px */
+  --es-text-quote: 1.0625rem;/* 17px — a pull quote should not shrink on the web */
+  --es-leading-snug: var(--es-leading-normal);
+}
+
+/* Social frames are 1080px canvases viewed at thumbnail size in a feed. Slide-true
+   body copy is unreadable there, so the whole scale steps up. [INFERRED] — there
+   is no social precedent in the corpus; sizes are set from the practical floor for
+   in-feed legibility, then the ratios of the slide scale are preserved above it. */
+[data-context="social"] {
+  --es-text-display-fixed: 6rem; /*  96px */
+  --es-text-section-fixed: 4rem; /*  64px */
+  --es-text-display:  6rem;     /*  96px */
+  --es-text-section:  4rem;     /*  64px */
+  --es-text-title:    3rem;     /*  48px */
+  --es-text-heading:  2.25rem;  /*  36px */
+  --es-text-subhead:  2.125rem; /*  34px */
+  --es-text-lead:     1.875rem; /*  30px */
+  --es-text-body:     1.75rem;  /*  28px */
+  --es-text-quote:    1.875rem; /*  30px */
+  --es-text-caption:  1.375rem; /*  22px */
+  --es-leading-snug:  1.35;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --es-motion-duration-fast: 0ms;
+    --es-motion-duration-base: 0ms;
+    --es-motion-duration-slow: 0ms;
+  }
+}

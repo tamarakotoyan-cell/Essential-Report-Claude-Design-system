@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Social frames — Essential Research</title>
+<meta name="description" content="Feed and carousel frames for publishing a finding. Same chrome vocabulary as the deck, re-composed for square and portrait.">
+<link rel="stylesheet" href="../tokens/tokens.css">
+<link rel="stylesheet" href="../styles/base.css">
+<link rel="stylesheet" href="../styles/components.css">
+<link rel="stylesheet" href="../styles/patterns.css">
+<style>
+  /* Page chrome for the frame viewer. Not part of the design system. */
+  .frames { max-width: 76rem; margin-inline: auto; padding: var(--es-space-2xl) var(--es-space-lg) var(--es-space-5xl); display: grid; gap: var(--es-space-2xl); }
+  .frames__set { display: grid; gap: var(--es-space-md); }
+  .frames__name { font-family: var(--es-font-mono); font-size: var(--es-text-caption); color: var(--es-colour-text-muted); }
+  .frames__note { font-size: var(--es-text-lead); color: var(--es-colour-text-muted); line-height: var(--es-leading-normal); max-width: var(--es-layout-measure); }
+  .frames__carousel { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: var(--es-space-md); }
+  .frames__pair { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: var(--es-space-lg); align-items: start; }
+  @media (max-width: 48rem) { .frames__pair { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<!-- partial:assets/logo/logo-sprite.html -->
+<!-- Logo sprite. Inlined so currentColor and --es-logo-dot resolve against
+     the surrounding surface scope. Source: assets/logo/essential-research-positive.svg -->
+<svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
+  <symbol id="es-logo" viewBox="0 0 347.2 91.2">
+    <g>
+        <path fill="currentColor" d="M0,51c3.8,0,5.2-1.1,5.2-5.6V9.7c0-4.5-1.3-5.6-5.2-5.6v-4h39.9l0.9,13.6h-6.4c-1.7-6-2.6-7.6-8.3-7.6h-7.5
+        v18.3h4.2c4.9,0,6.1-1.1,6.4-5.6h5.7v16.9h-5.7c-0.3-4.2-1.5-5.6-6.4-5.6h-4.3v19.1h8.9c5,0,7.1-1.8,7.7-9.1h6.5v14.7H0V51z"/>
+        <path fill="currentColor" d="M46.6,52.4v-8.7H55c0.6,5.6,3.6,7,7.6,7c3.7,0,6.2-1.4,6.2-4.6c0-3-1.7-4.3-5.2-5l-6.4-1.3
+        c-6.7-1.4-10.4-5.7-10.4-12.6c0-9.3,7.4-13.7,16.2-13.7c7.3,0,11.9,1.9,14,2.8v8.6h-7.7c-0.6-4.6-3.4-6-7.3-6
+        c-3.3,0-5.3,1.3-5.3,4.2c0,2.4,1.4,3.6,4.2,4.2l6,1.3c7.8,1.7,12.5,6.1,12.5,13.6c0,8.6-6.4,13.4-17.7,13.4
+        C53.1,55.8,48.9,53.6,46.6,52.4z"/>
+        <path fill="currentColor" d="M83.2,52.4v-8.7h8.3c0.6,5.6,3.6,7,7.6,7c3.7,0,6.2-1.4,6.2-4.6c0-3-1.7-4.3-5.2-5l-6.4-1.3
+        c-6.7-1.4-10.4-5.7-10.4-12.6c0-9.3,7.4-13.7,16.2-13.7c7.3,0,11.9,1.9,14,2.8v8.6h-7.7c-0.6-4.6-3.4-6-7.3-6
+        c-3.3,0-5.3,1.3-5.3,4.2c0,2.4,1.4,3.6,4.2,4.2l6,1.3c7.8,1.7,12.5,6.1,12.5,13.6c0,8.6-6.4,13.4-17.7,13.4
+        C89.7,55.8,85.5,53.6,83.2,52.4z"/>
+        <path fill="currentColor" d="M154.2,45.9l2,3.4c-4.4,4.4-9.7,6.5-17,6.5c-12.4,0-19.6-7.8-19.6-21.3c0-13.3,7.8-21,19.5-21
+        c12.9,0,17.7,7.5,17.7,19.5v3.7h-23.5c0.3,8.3,3.1,11.9,10.4,11.9C147.1,48.5,150.7,47.7,154.2,45.9z M133.4,30.9h10.9
+        c0-9.4-1.3-12.2-5-12.2C135.6,18.6,134,21.5,133.4,30.9z"/>
+        <path fill="currentColor" d="M174.3,13.5c0.5,0.8,2.2,3.9,2.4,7.1c3.4-3.9,7.6-7.1,13.8-7.1c6.4,0,11.5,3.8,11.5,12.2v19.8
+        c0,4.5,0.8,5.5,4.6,5.5v3.8h-21.9V51c3.8,0,4.6-1,4.6-5.4V28.8c0-4.8-1.9-6.4-5.1-6.4c-3.2,0-5.4,1.3-7.2,2.5v20.6
+        c0,4.4,0.8,5.4,4.6,5.4v3.8h-22V51c3.8,0,4.6-1,4.6-5.5V27c0-5.7-0.7-6.5-4.5-6.7v-3.7L174.3,13.5z"/>
+        <path fill="currentColor" d="M254,13.9v31.6c0,4.5,0.8,5.5,4.6,5.5v3.8h-22V51c3.8,0,4.6-1,4.6-5.5V27c0-5.7-0.7-6.5-4.5-6.7v-3.7
+        L254,13.9z"/>
+        <path fill="currentColor" d="M301.3,49.6v3.5c-1.7,1.1-4.9,2.1-8.6,2.1c-4.7,0-7.6-2.1-8.3-5.4c-1.3,2.9-4.6,6-10.9,6
+        c-6.9,0-12.5-3.4-12.5-11.6c0-9.3,6.7-13.3,19-13.3c0.9,0,3.1,0.1,4.1,0.2v-3.6c0-5.9-1.5-8.4-5.3-8.4c-4,0-5.1,2.9-5.7,7.2h-9.4
+        v-8.3c4.3-2.5,10.8-4.5,17.4-4.5c9.1,0,15.7,4,15.7,13.2c0,2.4-0.3,8.9-0.3,16C296.4,48.5,297.4,49.5,301.3,49.6z M281.1,35.6
+        c-4.6,0-7.1,2.3-7.1,6.8c0,4.2,1.6,5.5,4.2,5.5c1.6,0,4.1-0.8,5.4-2.4l0.2-10H281.1z"/>
+        <path fill="currentColor" d="M206.5,14.5L206.5,14.5l0,6.4h4.7v23.5c0,8.8,4.1,11.5,11.5,11.5c4.7,0,8.2-1,11.4-3l-1.3-4.4
+        c-1.8,0.7-3.1,1-4.5,1c-3.9,0-4.4-2.4-4.4-8.1V20.8h8.2v-6.4h-8.2V4L212,5.8v4.1C212,13.7,211,14.5,206.5,14.5L206.5,14.5z"/>
+        <path fill="currentColor" d="M319.7,0c0.4,0.6,1.6,2.7,1.6,7.8v37.7c0,4.5,0.8,5.5,4.6,5.5v3.8h-22V51c3.8,0,4.6-1,4.6-5.5V12.4
+        c0-5.7-1.1-6.5-4.9-6.7V2L319.7,0z"/>
+        <path fill="var(--es-logo-dot, #00ACED)" d="M339.8,55.2c-4,0-7.4-3.2-7.4-7.3c0-4,3.4-7.3,7.5-7.3c4.2,0,7.3,3.3,7.3,7.3
+        C347.2,52,343.9,55.2,339.8,55.2z"/>
+    </g>
+    <g>
+        <g>
+        <path fill="currentColor" d="M203.6,90.8h-2.1l-5.7-8h-4.2v8h-1.7V72.7h5.1c3.1,0,3.9,0,5.1,0.4c3,1,3.2,3.9,3.2,4.8
+        c0,1.9-0.8,2.9-1.4,3.5c-1.3,1.2-3,1.3-4,1.4L203.6,90.8z M191.5,81.3h4.2c1.2,0,2.3,0,3-0.2c1.9-0.4,2.6-1.8,2.6-3.3
+        c0-1.8-0.9-3.1-2.6-3.4c-0.5-0.1-0.7-0.1-3-0.1h-4.2V81.3z"/>
+        <path fill="currentColor" d="M219.9,90.8h-12.4v-18h11.8v1.6h-10.1v6.4h9.1v1.6h-9.1v6.9h10.7V90.8z"/>
+        <path fill="currentColor" d="M234.5,77.1c-0.2-0.5-0.4-1.1-0.8-1.6c-0.9-1.3-2.3-1.8-3.9-1.8c-1.9,0-4.2,0.8-4.2,3.2c0,2.2,2,2.8,3,3.1
+        c0.5,0.2,3.1,0.8,3.7,1c1,0.3,4.2,1.4,4.2,4.8c0,2.5-2.1,5.4-6.7,5.4c-1.9,0-3.3-0.5-4.2-1.1c-1.4-0.9-2.1-2.2-2.5-3.9l1.7-0.9
+        c0,0.7,0.1,1.5,0.4,2.1c0.8,1.7,2.7,2.3,4.5,2.3c3.5,0,5-1.9,5-3.8c0-1.3-0.6-2-1.1-2.4c-0.8-0.7-1.9-0.9-4.2-1.6
+        c-2.6-0.7-5.4-1.6-5.4-5c0-3.5,3.1-4.7,5.9-4.7c4.6,0,5.8,3,6.2,4L234.5,77.1z"/>
+        <path fill="currentColor" d="M253,90.8h-12.4v-18h11.8v1.6h-10.1v6.4h9.1v1.6h-9.1v6.9H253V90.8z"/>
+        <path fill="currentColor" d="M272.1,90.8h-1.9l-2.1-5.4h-8.1l-2,5.4h-1.9l7.4-18h1.4L272.1,90.8z M267.7,84l-3.5-9.2l-3.5,9.2H267.7z"
+        />
+        <path fill="currentColor" d="M289.6,90.8h-2.1l-5.7-8h-4.2v8h-1.7V72.7h5.1c3.1,0,3.9,0,5.1,0.4c3,1,3.2,3.9,3.2,4.8
+        c0,1.9-0.8,2.9-1.4,3.5c-1.3,1.2-3,1.3-4,1.4L289.6,90.8z M277.5,81.3h4.2c1.2,0,2.3,0,3-0.2c1.9-0.4,2.6-1.8,2.6-3.3
+        c0-1.8-0.9-3.1-2.6-3.4c-0.5-0.1-0.7-0.1-3-0.1h-4.2V81.3z"/>
+        <path fill="currentColor" d="M307.2,86.8c-1.7,3.8-4.4,4.4-6.7,4.4c-1.3,0-3.9-0.2-5.8-2.4c-1.4-1.6-2.1-4.1-2.1-6.9
+        c0-3.8,1.4-9.6,7.7-9.6c4.9,0,6.2,2.9,7,4.7l-1.7,0.9c-0.3-1.5-1.2-2.6-1.9-3.1c-1.2-0.9-2.6-0.9-3.3-0.9c-1.9,0-3.3,0.6-4.4,2.1
+        c-1.3,1.7-1.6,3.8-1.6,5.7c0,1.2,0.2,4.2,1.5,5.9c1.4,1.9,3.5,2.1,4.8,2.1c0.9,0,1.9-0.1,2.8-0.8c0.6-0.4,1.6-1.5,2.1-3.1
+        L307.2,86.8z"/>
+        <path fill="currentColor" d="M325.9,90.8h-1.7v-8.5h-11.1v8.5h-1.7v-18h1.7v8.1h11.1v-8.1h1.7V90.8z"/>
+        </g>
+    </g>
+  </symbol>
+</svg>
+<!-- /partial -->
+<!-- partial:assets/icons/icons.html -->
+<!-- =============================================================================
+     Essential Research — icon sprite
+
+     PLACEHOLDER SET. The reference reports use Microsoft Office stock icons
+     (element ids Icons_Meeting, Icons_ThoughtBubble, Icons_Garbage) recoloured
+     to gold, cyan or white. Those are Microsoft's artwork and are not
+     redistributed here.
+
+     These are drawn to the same rules so the system renders and the conventions
+     hold: 96 x 96 grid, solid fill, stroke="none", one flat colour taken from
+     currentColor, no outline style. Replace them with a licensed or bespoke
+     Essential set before this ships — see DESIGN.md, "What code cannot carry".
+     ========================================================================== -->
+<svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
+
+  <!-- The double-quote glyph. Sits above and overlapping the quote card's
+       top-left corner, never inside it. -->
+  <symbol id="es-icon-quote" viewBox="0 0 96 96">
+    <path d="M8 60c0-18 8-32 24-42 3-2 6 2 4 5-7 7-11 14-12 21 10 0 18 7 18 17s-8 17-18 17S8 70 8 60Z"/>
+    <path d="M50 60c0-18 8-32 24-42 3-2 6 2 4 5-7 7-11 14-12 21 10 0 18 7 18 17s-8 17-18 17-16-8-16-18Z"/>
+  </symbol>
+
+  <!-- Public. A group of people — the participant voice. -->
+  <symbol id="es-icon-public" viewBox="0 0 96 96">
+    <circle cx="48" cy="22" r="10"/>
+    <path d="M48 36c-9 0-15 5-15 13v27h30V49c0-8-6-13-15-13Z"/>
+    <circle cx="22" cy="30" r="8"/>
+    <path d="M22 42c-8 0-13 4-13 11v23h13V49c0-3 1-5 3-7Z"/>
+    <circle cx="74" cy="30" r="8"/>
+    <path d="M74 42c8 0 13 4 13 11v23H74V49c0-3-1-5-3-7Z"/>
+  </symbol>
+
+  <!-- Stakeholders. Scales inside a hexagonal node network — institutions,
+       weighed. -->
+  <symbol id="es-icon-stakeholders" viewBox="0 0 96 96">
+    <path d="M45 16h6v10h-6z"/>
+    <path d="M20 30h56v5H20z"/>
+    <path d="M45 33h6v38h-6z"/>
+    <path d="M32 74h32v6H32z"/>
+    <path d="M24 36 12 58h24L24 36Zm0 12 4 7h-8l4-7Z"/>
+    <path d="M72 36 60 58h24L72 36Zm0 12 4 7h-8l4-7Z"/>
+    <circle cx="48" cy="12" r="6"/>
+    <circle cx="14" cy="30" r="6"/>
+    <circle cx="82" cy="30" r="6"/>
+    <circle cx="14" cy="66" r="6"/>
+    <circle cx="82" cy="66" r="6"/>
+  </symbol>
+
+  <!-- POSITIVE. What is working. -->
+  <symbol id="es-icon-positive" viewBox="0 0 96 96">
+    <path d="M48 8a40 40 0 1 0 0 80 40 40 0 0 0 0-80Zm-6 58L24 48l7-7 11 11 23-23 7 7-30 30Z"/>
+  </symbol>
+
+  <!-- IMPROVE. What to refine. -->
+  <symbol id="es-icon-improve" viewBox="0 0 96 96">
+    <path d="M48 10c-14 0-25 11-25 25 0 9 5 16 10 21 3 3 4 6 4 9h22c0-3 1-6 4-9 5-5 10-12 10-21 0-14-11-25-25-25Z"/>
+    <path d="M37 72h22v6H37z"/>
+    <path d="M40 82h16v5H40z"/>
+  </symbol>
+
+  <!-- Method. Applied to methodology and executive-summary badges. -->
+  <symbol id="es-icon-method" viewBox="0 0 96 96">
+    <path d="M42 10a32 32 0 1 0 19 57l20 20 8-8-20-20A32 32 0 0 0 42 10Zm0 10a22 22 0 1 1 0 44 22 22 0 0 1 0-44Z"/>
+  </symbol>
+
+  <!-- Data. Used on quant dividers and stat blocks. -->
+  <symbol id="es-icon-data" viewBox="0 0 96 96">
+    <path d="M14 60h14v26H14zM33 40h14v46H33zM52 50h14v36H52zM71 22h14v64H71z"/>
+  </symbol>
+
+</svg>
+<!-- /partial -->
+
+<header class="es-header">
+  <div class="es-header__inner">
+    <a href="landing.html" class="es-logo" aria-label="Essential Research home"><svg class="es-logo__svg" viewBox="0 0 347.2 91.2"><use href="#es-logo"/></svg></a>
+    <nav class="es-nav" aria-label="Primary">
+      <a class="es-nav__link" href="landing.html">Home</a>
+      <a class="es-nav__link" href="report.html">Reports</a>
+      <a class="es-nav__link" href="slides.html">Decks</a>
+      <a class="es-nav__link" href="social.html" aria-current="page">Social</a>
+    </nav>
+  </div>
+</header>
+
+<main class="frames">
+  <div>
+    <p class="es-eyebrow">Social frames</p>
+    <h1 class="es-display">One finding, published</h1>
+    <p class="frames__note" style="margin-top: var(--es-space-sm)">
+      The deck vocabulary re-composed for the feed. The right-edge stripe becomes a bottom bar,
+      because a vertical stripe on a square frame reads as a rendering error. Everything else
+      holds: cyan for the finding, gold for the participant voice, the base always attached to
+      the number.
+    </p>
+  </div>
+
+  <!-- ===================== CAROUSEL ===================== -->
+  <section class="frames__set">
+    <p class="frames__name">carousel — 1:1, four frames</p>
+    <div class="frames__carousel">
+
+      <!-- 1. Hook -->
+      <div class="es-frame" data-ratio="1x1">
+        <div class="es-frame__inner" data-context="social" data-surface="inverse">
+          <div class="es-dots" style="position:absolute; inset:0; opacity:.28" aria-hidden="true"></div>
+          <div style="position:relative">
+            <span class="es-logo" data-on="dark"><svg class="es-logo__svg" viewBox="0 0 347.2 91.2"><use href="#es-logo"/></svg></span>
+          </div>
+          <div style="position:relative">
+            <p class="es-eyebrow">New qualitative research</p>
+            <h2 class="es-section-title" style="color: var(--es-colour-text-on-inverse)">Most people think legal help is there if they need it</h2>
+          </div>
+          <div class="es-frame__foot" style="position:relative">
+            <p class="es-caption" style="color: var(--es-colour-text-on-inverse-muted)">Swipe for what they said</p>
+            <span class="es-badge es-badge--highlight">1 of 4</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. The number -->
+      <div class="es-frame" data-ratio="1x1">
+        <div class="es-frame__inner" data-context="social" data-surface="page" style="background: var(--es-colour-surface-page)">
+          <span class="es-logo"><svg class="es-logo__svg" viewBox="0 0 347.2 91.2"><use href="#es-logo"/></svg></span>
+          <div>
+            <p class="es-display" style="font-size: calc(var(--es-text-display) * 1.6); line-height: var(--es-leading-flat); color: var(--es-colour-surface-inverse)">8%</p>
+            <p class="es-subhead" style="margin-top: var(--es-space-sm); max-width: 18ch">of Australians actually qualify for legal aid</p>
+            <p class="es-caption" style="margin-top: var(--es-space-2xs)">Figure presented to participants during fieldwork, October 2025</p>
+          </div>
+          <div class="es-frame__foot">
+            <div class="es-dots es-dots--rule" style="width: 40%"></div>
+            <span class="es-badge">2 of 4</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. The voice -->
+      <div class="es-frame" data-ratio="1x1">
+        <div class="es-frame__inner" data-context="social" data-surface="page" style="background: var(--es-colour-surface-wash)">
+          <span class="es-logo"><svg class="es-logo__svg" viewBox="0 0 347.2 91.2"><use href="#es-logo"/></svg></span>
+          <figure class="es-quote" style="background: var(--es-colour-surface-sunken)">
+            <svg class="es-quote__mark" viewBox="0 0 96 96" aria-hidden="true"><use href="#es-icon-quote"/></svg>
+            <blockquote class="es-quote__text" style="font-size: var(--es-text-subhead)">Eight per cent? I assumed if you needed it you'd get it. That changes what I think the problem is.</blockquote>
+            <figcaption class="es-quote__attribution" style="font-size: var(--es-text-lead)">Female, 36-55, No Centrelink</figcaption>
+          </figure>
+          <div class="es-frame__foot">
+            <span class="es-audience" data-audience="public" style="width: var(--es-space-xl); height: var(--es-space-xl)"><svg class="es-audience__icon" viewBox="0 0 96 96"><use href="#es-icon-public"/></svg></span>
+            <span class="es-badge">3 of 4</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. The ask -->
+      <div class="es-frame" data-ratio="1x1">
+        <div class="es-frame__inner" data-context="social" data-surface="inverse" style="background: var(--es-colour-surface-accent)">
+          <span class="es-logo" data-on="dark"><svg class="es-logo__svg" viewBox="0 0 347.2 91.2"><use href="#es-logo"/></svg></span>
+          <div>
+            <h2 class="es-section-title" style="color: var(--es-colour-text-on-accent)">Read the full report</h2>
+            <p class="es-subhead" style="color: var(--es-colour-text-on-accent); margin-top: var(--es-space-sm); max-width: 26ch">
+              Three-day online board with n=38 participants, plus eighteen stakeholder conversations.
+            </p>
+          </div>
+          <div class="es-frame__foot">
+            <span class="es-button es-button--secondary es-button--lg">Link in bio</span>
+            <span class="es-badge es-badge--inverse">4 of 4</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <p class="frames__note">
+      Four frames, one argument: hook, number, voice, ask. The number frame never travels without
+      its base. The voice frame carries the audience badge so the reader knows who is speaking
+      before they read the quote.
+    </p>
+  </section>
+
+  <!-- ===================== PORTRAIT + STORY ===================== -->
+  <section class="frames__set">
+    <p class="frames__name">feed 4:5 and story 9:16</p>
+    <div class="frames__pair">
+
+      <div class="es-frame" data-ratio="4x5">
+        <div class="es-frame__inner" data-context="social" data-surface="page" style="background: var(--es-colour-surface-page)">
+          <div>
+            <span class="es-logo"><svg class="es-logo__svg" viewBox="0 0 347.2 91.2"><use href="#es-logo"/></svg></span>
+            <p class="es-eyebrow" style="margin-top: var(--es-space-lg)">Message testing</p>
+            <h2 class="es-section-title" style="color: var(--es-colour-text-heading); margin-top: var(--es-space-2xs)">Fairness beat every other frame we tested</h2>
+          </div>
+          <div class="es-stat" data-tone="inverse">
+            <p class="es-stat__value">Fairness</p>
+            <p class="es-stat__label">Strongest overall support with both the public and the sector</p>
+            <p class="es-stat__base">Three frames tested. Qualitative — not a percentage.</p>
+          </div>
+          <div>
+            <p class="es-lead">Why it worked</p>
+            <ul class="es-list">
+              <li>Fairness is read as a core part of the Australian identity.</li>
+              <li>&ldquo;Justice delayed is justice denied&rdquo; was the most memorable line tested.</li>
+              <li>The eight per cent figure gave the frame its scale.</li>
+            </ul>
+          </div>
+          <div class="es-frame__bar"></div>
+        </div>
+      </div>
+
+      <div class="es-frame" data-ratio="9x16">
+        <div class="es-frame__inner" data-context="social" data-surface="inverse">
+          <div class="es-dots" data-direction="down" style="position:absolute; inset:0; opacity:.3" aria-hidden="true"></div>
+          <div style="position:relative">
+            <span class="es-logo" data-on="dark"><svg class="es-logo__svg" viewBox="0 0 347.2 91.2"><use href="#es-logo"/></svg></span>
+          </div>
+          <div style="position:relative">
+            <p class="es-eyebrow">What people told us</p>
+            <h2 class="es-display" style="color: var(--es-colour-text-on-inverse)">Goodwill is not the problem</h2>
+            <p class="es-subhead" style="color: var(--es-colour-text-on-inverse-muted); margin-top: var(--es-space-md); font-weight: var(--es-weight-regular)">
+              The public already thinks well of legal assistance. What surprises them is how few
+              people can get it.
+            </p>
+          </div>
+          <div style="position:relative">
+            <figure class="es-quote es-quote--bare">
+              <svg class="es-quote__mark" viewBox="0 0 96 96" aria-hidden="true"><use href="#es-icon-quote"/></svg>
+              <blockquote class="es-quote__text" style="font-size: var(--es-text-subhead); color: var(--es-colour-text-on-inverse)">I assumed if you needed it you'd get it.</blockquote>
+              <figcaption class="es-quote__attribution" style="font-size: var(--es-text-lead); color: var(--es-colour-surface-highlight)">Female, 36-55, No Centrelink</figcaption>
+            </figure>
+            <div class="es-frame__bar" style="margin-top: var(--es-space-lg)"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <p class="frames__note">
+      Portrait carries a stat block and a short evidence list. The story frame carries one idea
+      and one quote — anything more will not be read at that speed. Both keep the logo top left
+      and the cyan bar as the closing mark.
+    </p>
+  </section>
+
+</main>
+
+<footer class="es-footer">
+  <div class="es-footer__colophon">
+    <span>Essential Research — social frames</span>
+    <span>1080 square, 1080 &times; 1350 portrait, 1080 &times; 1920 story</span>
+  </div>
+</footer>
+
+</body>
+</html>
